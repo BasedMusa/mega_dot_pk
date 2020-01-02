@@ -28,8 +28,6 @@ class ItemDetailsBLOC extends ChangeNotifier {
 
   Future<void> loadData() async {
     try {
-      print("Loading details...${_item.id}");
-
       taskStatus = AsyncTaskStatus.loading();
 
       DataFunctionResponse<Map> response =

@@ -4,10 +4,13 @@ import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/transparent_image.dart';
 
+import '../pages/category_page.dart';
+
 class CategoryListItem extends StatefulWidget {
   final Category category;
+  final Function() searchButtonCallback;
 
-  CategoryListItem(this.category);
+  CategoryListItem(this.category, {this.searchButtonCallback});
 
   @override
   _CategoryListItemState createState() => _CategoryListItemState();
@@ -74,12 +77,16 @@ class _CategoryListItemState extends State<CategoryListItem> {
         ),
       );
 
-  void _onTap() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CategoryPage(widget.category),
-      ),
-    );
+  Future<void> _onTap() async {
+    CategoryPageReturnType returnType = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryPage(widget.category),
+          ),
+        ) ??
+        CategoryPageReturnType.Back;
+
+    if (returnType == CategoryPageReturnType.Search)
+      widget.searchButtonCallback();
   }
 }
