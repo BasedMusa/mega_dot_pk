@@ -5,7 +5,7 @@ import 'package:http/http.dart' as HTTP;
 import 'package:mega_dot_pk/utils/models.dart';
 
 class APIInterface {
-  static const baseURL = "http://192.168.64.2/mobile";
+  static const baseURL = "http://192.168.1.121/mobile";
 
   static Future<DataFunctionResponse<List<Category>>> categories() async {
     try {
@@ -68,7 +68,6 @@ class APIInterface {
       Map json = await _sendRequest(url);
 
       if (json != null) {
-        print(json);
         Map itemDetails = json["details"];
 
         return DataFunctionResponse.success(itemDetails);

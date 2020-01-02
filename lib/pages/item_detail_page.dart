@@ -405,7 +405,7 @@ class __DetailsSheetState extends State<_DetailsSheet> {
                     vertical: sizeConfig.width(.0275),
                   ),
                   child: Text(
-                    generalSpecs.values.toList()[i] ?? "?",
+                    generalSpecs.values.toList()[i].toString() ?? "?",
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       color: generalSpecs.values.toList()[i] != null
