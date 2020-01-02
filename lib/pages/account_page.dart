@@ -18,11 +18,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  @override
-  void initState() {
-    print(widget.initialPage);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

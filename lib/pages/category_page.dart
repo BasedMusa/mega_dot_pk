@@ -15,6 +15,9 @@ import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/globals.dart';
+import '../widgets/transparent_image.dart';
+
 class CategoryPage extends StatefulWidget {
   final Category category;
 
@@ -52,11 +55,17 @@ class _CategoryPageState extends State<CategoryPage> {
       );
 
   _appBar() => SliverAppBar(
-        elevation: 0,
-        stretch: true,
+        elevation: .4,
         centerTitle: true,
         expandedHeight: sizeConfig.height(.4),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () =>
+                Navigator.pop(context, CategoryPageReturnType.Search),
+          )
+        ],
         flexibleSpace: Container(
           child: Center(
             child: Column(
@@ -331,9 +340,9 @@ class __SortButtonState extends State<_SortButton> {
               child: Text(
                 sorting.name,
                 style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontWeight: bloc.sorting?.value == sorting.value
-                            ? FontWeight.w700
-                            : null,
+                      fontWeight: bloc.sorting?.value == sorting.value
+                          ? FontWeight.w700
+                          : null,
                     ),
               ),
             ),
@@ -495,13 +504,38 @@ class __FilterPageState extends State<_FilterPage> {
                         bloc.taskStatus,
                         bloc.loadData,
                       )
-                    : Container(
-                        child: ListView.builder(
-                          itemCount: bloc.brands.length,
-                          itemBuilder: (context, i) =>
-                              _filterListItem(bloc.brands[i]),
-                        ),
-                      ),
+                    : bloc.brands.length == 0
+                        ? _noFiltersAvailable()
+                        : Container(
+                            child: ListView.builder(
+                              itemCount: bloc.brands.length,
+                              itemBuilder: (context, i) =>
+                                  _filterListItem(bloc.brands[i]),
+                            ),
+                          ),
+      );
+
+  _noFiltersAvailable() => Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.hourglass_empty,
+                color: Theme.of(context).textTheme.caption.color,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: sizeConfig.height(.01),
+                ),
+                child: Text(
+                  "Sorry, no filters are available.",
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ),
+            ],
+          ),
+        ),
       );
 
   _filterListItem(Brand brand) => Column(
@@ -543,3 +577,5 @@ class __FilterPageState extends State<_FilterPage> {
         ],
       );
 }
+
+enum CategoryPageReturnType { Search, Back }

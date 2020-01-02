@@ -12,6 +12,11 @@ import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/globals.dart';
+import '../utils/globals.dart';
+import '../widgets/branded_loading_indicator.dart';
+import '../widgets/transparent_image.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -33,7 +38,17 @@ class _HomePageState extends State<HomePage> {
 
   _appBar() => AppBar(
         elevation: 0.6,
-        centerTitle: false,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FadeInImage(
+              image: AssetImage("assets/images/wordmark.png"),
+              placeholder: MemoryImage(kTransparentImage),
+              height: sizeConfig.height(.025),
+            ),
+          ],
+        ),
       );
 
   _bottomNavigationBar() => _BottomNavigationBar(
@@ -153,6 +168,7 @@ class _HomePageState extends State<HomePage> {
                           itemCount: bloc.categories.length,
                           itemBuilder: (context, i) => CategoryListItem(
                             bloc.categories[i],
+                            searchButtonCallback: ()=>_onPageChanged(0),
                           ),
                         ),
                       ),
@@ -232,7 +248,8 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
           bottom: sizeConfig.height(.015) + sizeConfig.safeArea.bottom,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).dividerColor),
+          border: Border.all(
+              color: Theme.of(context).unselectedWidgetColor.withOpacity(.1)),
           borderRadius: BorderRadius.circular(sizeConfig.height(.039)),
         ),
         child: Column(

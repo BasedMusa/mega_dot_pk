@@ -1,11 +1,11 @@
-import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/blocs/item_details_bloc.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/pages/all_specs_page.dart';
+import 'package:mega_dot_pk/pages/cart_page.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
@@ -66,21 +66,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         height: sizeConfig.safeArea.bottom + sizeConfig.height(.1),
         padding: EdgeInsets.only(bottom: sizeConfig.safeArea.bottom),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          border: Border.fromBorderSide(
-            BorderSide(
-              color: Theme.of(context).dividerColor.withOpacity(.05),
-              width: .75,
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).dividerColor.withOpacity(.8),
-              blurRadius: 15,
-              spreadRadius: 1,
-            ),
-          ],
           color: Theme.of(context).canvasColor,
+          border: Border.all(
+              color: Theme.of(context).unselectedWidgetColor.withOpacity(.1)),
+          borderRadius: BorderRadius.circular(sizeConfig.height(.039)),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -119,9 +108,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             Container(
               child: Column(
                 children: <Widget>[
-//                Container(
-//                  child: _appBar(),
-//                ),
                   Container(
                     padding: EdgeInsets.only(
                       top: sizeConfig.height(.035),
@@ -146,7 +132,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         ? BrandedLoadingIndicator()
                         : BrandedErrorPage(bloc.taskStatus, bloc.loadData)),
               ),
-              secondChild: _DetailsSheet(bloc.itemDetails),
+              secondChild: _DetailsSheet(widget.item, bloc.itemDetails),
               crossFadeState: bloc.taskStatus.loading || bloc.taskStatus.error
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
@@ -193,15 +179,17 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     style: Theme.of(context).textTheme.caption,
                     textAlign: TextAlign.end,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      widget.item.warranty,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.caption,
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
+                  widget.item.warranty != "0" && widget.item.warranty != "3"
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 2.0),
+                          child: Text(
+                            widget.item.warranty,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.end,
+                          ),
+                        )
+                      : Container(),
                   Padding(
                     padding: EdgeInsets.only(top: 2.0),
                     child: Text(
@@ -296,21 +284,20 @@ class __ShopButtonState extends State<_ShopButton> {
       );
 
   Future<void> _onTap() async {
-    if (auth.isAuthorized == false) {
-      await Navigator.push(
-        context,
-        SlideUpPageRoute(
-          child: AccountPage(),
-        ),
-      );
-    }
+    await Navigator.push(
+      context,
+      SlideUpPageRoute(
+        child: CartPage(showAddedToCartBanner: true,),
+      ),
+    );
   }
 }
 
 class _DetailsSheet extends StatefulWidget {
+  final Item item;
   final Map itemDetails;
 
-  _DetailsSheet(this.itemDetails);
+  _DetailsSheet(this.item, this.itemDetails);
 
   @override
   __DetailsSheetState createState() => __DetailsSheetState();
@@ -343,7 +330,7 @@ class __DetailsSheetState extends State<_DetailsSheet> {
           "Specs",
           style: Theme.of(context).textTheme.title,
         ),
-        Platform.isIOS
+        defaultTargetPlatform == TargetPlatform.iOS
             ? CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Row(
@@ -441,7 +428,8 @@ class __DetailsSheetState extends State<_DetailsSheet> {
   void _seeAllSpecs() => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AllSpecsPage(widget.itemDetails),
+          builder: (context) =>
+              AllSpecsPage("Specs - ${widget.item.name}", widget.itemDetails),
         ),
       );
 }
