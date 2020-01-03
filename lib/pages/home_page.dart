@@ -6,6 +6,7 @@ import 'package:mega_dot_pk/widgets/category_list_item.dart';
 import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
+import 'package:mega_dot_pk/widgets/search_icon.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
@@ -229,7 +230,7 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
       Color unselectedIconColor = Colors.black;
 
       List<IconData> icons = [
-        Icons.search,
+        SearchIcon.iconData(),
         Icons.home,
         Icons.shopping_basket,
         widget.selectedIndex == 3 ? Icons.favorite : Icons.favorite_border,

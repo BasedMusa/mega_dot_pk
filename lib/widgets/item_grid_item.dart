@@ -76,6 +76,7 @@ class _ItemGridItemState extends State<ItemGridItem> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
+                          ///Image
                           Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.only(
@@ -91,6 +92,7 @@ class _ItemGridItemState extends State<ItemGridItem> {
                               ),
                             ),
                           ),
+                          ///Price
                           Container(
                             margin: EdgeInsets.symmetric(
                               horizontal: sizeConfig.width(.035),

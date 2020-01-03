@@ -17,6 +17,7 @@ class BrandedImage extends StatelessWidget {
         fit: fit,
         height: height,
         width: width,
+        alignment: Alignment.center,
         enableRefresh: true,
         image: AdvancedNetworkImage(url, useDiskCache: false),
         loadingWidget: _center(child: BrandedLoadingIndicator()),

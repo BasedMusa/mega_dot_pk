@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/blocs/item_details_bloc.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/pages/all_specs_page.dart';
@@ -14,6 +15,7 @@ import 'package:mega_dot_pk/widgets/branded_image.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ItemDetailPage extends StatefulWidget {
@@ -84,7 +86,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   padding: EdgeInsets.only(
                     right: sizeConfig.width(.02),
                   ),
-                  child: _ShopButton(widget.item.price),
+                  child: _ShopButton(widget.item),
                 ),
               ),
               LightCTAButton(
@@ -220,9 +222,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 }
 
 class _ShopButton extends StatefulWidget {
-  final String price;
+  final Item item;
 
-  _ShopButton(this.price);
+  _ShopButton(this.item);
 
   @override
   __ShopButtonState createState() => __ShopButtonState();
@@ -239,6 +241,7 @@ class __ShopButtonState extends State<_ShopButton> {
           color: Theme.of(context).primaryColor,
           child: InkWell(
             onTap: _onTap,
+            splashColor: Colors.white.withOpacity(.5),
             borderRadius: BorderRadius.circular(18),
             child: Container(
               height: double.maxFinite,
@@ -258,7 +261,7 @@ class __ShopButtonState extends State<_ShopButton> {
                         horizontal: sizeConfig.width(.06),
                         vertical: sizeConfig.height(.01),
                       ),
-                      child: Text("${widget.price} PKR"),
+                      child: Text("${widget.item.price} PKR"),
                     ),
                     Spacer(),
                     Container(
@@ -284,10 +287,13 @@ class __ShopButtonState extends State<_ShopButton> {
       );
 
   Future<void> _onTap() async {
+    Provider.of<CartBLOC>(context, listen: false).addItem(widget.item);
     await Navigator.push(
       context,
       SlideUpPageRoute(
-        child: CartPage(showAddedToCartBanner: true,),
+        child: CartPage(
+          showAddedToCartBanner: true,
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
+import 'package:mega_dot_pk/widgets/search_icon.dart';
 
 import '../utils/globals.dart';
 
@@ -35,13 +36,12 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
 
   _appBar() => AppBar(
         elevation: .4,
+        title: Text(widget.title),
         actions: <Widget>[
           AnimatedCrossFade(
             firstChild: IconButton(
                 icon: Icon(
-                  defaultTargetPlatform == TargetPlatform.iOS
-                      ? CupertinoIcons.search
-                      : Icons.search,
+                  SearchIcon.iconData(),
                 ),
                 onPressed: () async {
                   await _pageScrollController.animateTo(0,

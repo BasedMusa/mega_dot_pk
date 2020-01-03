@@ -1,28 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mega_dot_pk/utils/api_interface.dart';
+import 'package:mega_dot_pk/utils/mixins.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
-class FiltersBLOC extends ChangeNotifier {
+class FiltersBLOC extends ChangeNotifier with AsyncTaskMixin {
   Category _category;
   List<Brand> _brands;
 
-  AsyncTaskStatus _taskStatus;
-
   List<Brand> get brands => _brands;
-
-  AsyncTaskStatus get taskStatus => _taskStatus;
 
   set brands(List<Brand> brands) {
     _brands = brands;
     notifyListeners();
   }
 
-  set taskStatus(AsyncTaskStatus taskStatus) {
-    _taskStatus = taskStatus;
-    notifyListeners();
-  }
-
-  FiltersBLOC(Category category){
+  FiltersBLOC(Category category) {
     this._category = category;
     loadData();
   }

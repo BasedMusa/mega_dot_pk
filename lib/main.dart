@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
 import 'package:mega_dot_pk/pages/splash_screen_page.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class _MegaDotPKAppState extends State<MegaDotPKApp> {
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
+          ChangeNotifierProvider<CartBLOC>(create: (_) => CartBLOC()),
           ChangeNotifierProvider<CategoriesBLOC>(
               create: (_) => CategoriesBLOC()),
         ],
@@ -78,6 +80,12 @@ class _MegaDotPKAppState extends State<MegaDotPKApp> {
               ),
               title: GoogleFonts.poppins(fontWeight: FontWeight.w600)
                   .copyWith(color: Colors.black),
+            ),
+            buttonColor: Color(0xFFFF9000),
+            cardTheme: CardTheme(elevation: 0),
+            buttonTheme: ButtonThemeData(
+
+              buttonColor: Color(0xFFFF9000),
             ),
           ),
           home: SplashScreenPage(),

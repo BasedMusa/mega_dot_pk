@@ -1,23 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mega_dot_pk/utils/api_interface.dart';
+import 'package:mega_dot_pk/utils/mixins.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
-class ItemDetailsBLOC extends ChangeNotifier {
+class ItemDetailsBLOC extends ChangeNotifier with AsyncTaskMixin {
   Item _item;
   Map _itemDetails;
-  AsyncTaskStatus _taskStatus;
 
   Map get itemDetails => _itemDetails;
 
-  AsyncTaskStatus get taskStatus => _taskStatus;
-
   set itemDetails(Map itemDetails) {
     _itemDetails = itemDetails;
-    notifyListeners();
-  }
-
-  set taskStatus(AsyncTaskStatus taskStatus) {
-    _taskStatus = taskStatus;
     notifyListeners();
   }
 

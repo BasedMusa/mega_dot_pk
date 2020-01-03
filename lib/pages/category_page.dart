@@ -12,11 +12,10 @@ import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/branded_fab.dart';
 import 'package:mega_dot_pk/widgets/item_grid_item.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
+import 'package:mega_dot_pk/widgets/search_icon.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
-
 import '../utils/globals.dart';
-import '../widgets/transparent_image.dart';
 
 class CategoryPage extends StatefulWidget {
   final Category category;
@@ -61,7 +60,7 @@ class _CategoryPageState extends State<CategoryPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
+            icon: SearchIcon(),
             onPressed: () =>
                 Navigator.pop(context, CategoryPageReturnType.Search),
           )
