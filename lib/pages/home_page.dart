@@ -12,11 +12,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/globals.dart';
 import '../utils/globals.dart';
 import '../widgets/branded_loading_indicator.dart';
-import '../widgets/transparent_image.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -40,16 +37,11 @@ class _HomePageState extends State<HomePage> {
   _appBar() => AppBar(
         elevation: 0.6,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FadeInImage(
-              image: AssetImage("assets/images/wordmark.png"),
-              placeholder: MemoryImage(kTransparentImage),
-              height: sizeConfig.height(.025),
-            ),
-          ],
-        ),
+//        title: FadeInImage(
+//          image: AssetImage("assets/images/wordmark.png"),
+//          placeholder: MemoryImage(kTransparentImage),
+//          height: sizeConfig.height(.025),
+//        ),
       );
 
   _bottomNavigationBar() => _BottomNavigationBar(

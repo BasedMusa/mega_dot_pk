@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
 class CartBLOC extends ChangeNotifier {
-  List<Item> _items = [];
+  Map<String, List<Item>> _items = {};
 
-  List<Item> get items => _items;
+  Map<String, List<Item>> get items => _items;
 
   void addItem(Item item) {
-    _items.insert(0, item);
+    if (_items.containsKey(item.id))
+      _items[item.id].add(item);
+    else
+      _items[item.id] = [item];
+
     notifyListeners();
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/utils/models.dart';
-import 'package:mega_dot_pk/widgets/item_list_item.dart';
+import 'package:mega_dot_pk/widgets/item_cart_list_item.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/globals.dart';
@@ -123,9 +123,9 @@ class _CartPageState extends State<CartPage> {
           child: ListView.builder(
             physics: _showBanner ? NeverScrollableScrollPhysics() : null,
             padding: EdgeInsets.only(bottom: sizeConfig.height(.035)),
-            itemCount: bloc.items.length,
+            itemCount: bloc.items.keys.length,
             itemBuilder: (context, int index) =>
-                ItemListItem(bloc.items[index]),
+                ItemCartListItem(bloc.items.values.toList()[index].first, bloc.items.values.toList()[index].length),
           ),
         ),
       );
@@ -133,13 +133,15 @@ class _CartPageState extends State<CartPage> {
   String _calculateTotalAmount() {
     final currencyFormat = new NumberFormat("#,##0.00", "en_US");
 
-    List<Item> cartItems = Provider.of<CartBLOC>(context).items;
+    Map<String, List<Item>> cartItems = Provider.of<CartBLOC>(context).items;
 
     int totalAmount = 0;
 
-    cartItems.forEach((Item item) {
-      int price = int.parse(item.price.replaceAll(",", ""));
-      totalAmount += price;
+    cartItems.forEach((String key, List<Item> value) {
+      value.forEach((Item item) {
+        int price = int.parse(item.price.replaceAll(",", ""));
+        totalAmount += price;
+      });
     });
 
     return "${currencyFormat.format(totalAmount)} PKR";

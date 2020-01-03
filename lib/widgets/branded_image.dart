@@ -21,7 +21,7 @@ class BrandedImage extends StatelessWidget {
         enableRefresh: true,
         image: AdvancedNetworkImage(url, useDiskCache: false),
         loadingWidget: _center(child: BrandedLoadingIndicator()),
-        placeholder: _center(child: BrandedErrorLogo()),
+        placeholder: _center(child: BrandedErrorLogo(showRefreshIcon: true,)),
       );
 
   _center({@required Widget child}) => Container(

@@ -21,7 +21,9 @@ class _BrandedErrorPageState extends State<BrandedErrorPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              BrandedErrorLogo(),
+              BrandedErrorLogo(
+                showRefreshIcon: widget.onTap != null,
+              ),
               Padding(
                 padding: EdgeInsets.only(
                   top: sizeConfig.height(.01),
