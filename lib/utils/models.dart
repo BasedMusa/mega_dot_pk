@@ -71,7 +71,7 @@ class AsyncTaskStatus {
         this.error = false,
         this.errorMessage = null;
 
-  AsyncTaskStatus.error([this.errorMessage = "Something went wrong."])
+  AsyncTaskStatus.error([this.errorMessage = "Something Went Wrong"])
       : this.loading = true,
         this.error = true;
 
@@ -91,7 +91,7 @@ class DataFunctionResponse<T> {
   DataFunctionResponse.success(this.data, {this.hasMore = false})
       : this.success = true;
 
-  DataFunctionResponse.error({this.errorMessage = "Oh no! Something broke."})
+  DataFunctionResponse.error({this.errorMessage = "Something Broke"})
       : this.success = false;
 }
 

@@ -39,6 +39,7 @@ class _CartPageState extends State<CartPage> {
         appBar: _appBar(),
         body: _body(),
         bottomNavigationBar: _bottomAppBar(),
+        backgroundColor: Theme.of(context).canvasColor,
       );
 
   _appBar() => AppBar(
@@ -124,8 +125,9 @@ class _CartPageState extends State<CartPage> {
             physics: _showBanner ? NeverScrollableScrollPhysics() : null,
             padding: EdgeInsets.only(bottom: sizeConfig.height(.035)),
             itemCount: bloc.items.keys.length,
-            itemBuilder: (context, int index) =>
-                ItemCartListItem(bloc.items.values.toList()[index].first, bloc.items.values.toList()[index].length),
+            itemBuilder: (context, int index) => ItemCartListItem(
+                bloc.items.values.toList()[index].first,
+                bloc.items.values.toList()[index].length),
           ),
         ),
       );

@@ -34,6 +34,14 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
         backgroundColor: Theme.of(context).canvasColor,
       );
 
+  @override
+  void dispose() {
+    _pageScrollController?.dispose();
+    _searchFieldController?.dispose();
+    _searchFieldFocusNode?.dispose();
+    super.dispose();
+  }
+
   _appBar() => AppBar(
         elevation: .4,
         title: Text(widget.title),

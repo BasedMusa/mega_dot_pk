@@ -128,45 +128,29 @@ class _HomePageState extends State<HomePage> {
                     : NestedScrollView(
                         headerSliverBuilder:
                             (BuildContext context, bool innerBoxIsScrolled) => [
-                          defaultTargetPlatform == TargetPlatform.iOS
-                              ? CupertinoSliverNavigationBar(
-                                  largeTitle: Center(
-                                    child: Text("Browse"),
-                                  ),
-                                  middle: AnimatedOpacity(
-                                    duration: Constants.animationDuration,
-                                    opacity: innerBoxIsScrolled ? 1 : 0,
-                                    child: Text(
-                                      "Browse",
-                                      style: Theme.of(context).textTheme.title,
-                                    ),
-                                  ),
-                                )
-                              : SliverAppBar(
-                                  elevation: 0.4,
-                                  stretch: false,
-                                  centerTitle: true,
-                                  primary: true,
-                                  pinned: true,
-                                  expandedHeight: sizeConfig.height(.35),
-                                  flexibleSpace: Container(
-                                    padding: EdgeInsets.only(
-                                      top: sizeConfig.height(.035),
-                                    ),
-                                    child: Center(
-                                      child: AnimatedDefaultTextStyle(
-                                        duration: Duration(milliseconds: 100),
-                                        curve: Curves.easeInQuint,
-                                        style: innerBoxIsScrolled
-                                            ? Theme.of(context).textTheme.title
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .display1,
-                                        child: Text("Browse"),
-                                      ),
-                                    ),
-                                  ),
+                          SliverAppBar(
+                            elevation: 0.4,
+                            stretch: false,
+                            centerTitle: true,
+                            primary: true,
+                            pinned: true,
+                            expandedHeight: sizeConfig.height(.35),
+                            flexibleSpace: Container(
+                              padding: EdgeInsets.only(
+                                top: sizeConfig.height(.035),
+                              ),
+                              child: Center(
+                                child: AnimatedDefaultTextStyle(
+                                  duration: Duration(milliseconds: 100),
+                                  curve: Curves.easeInQuint,
+                                  style: innerBoxIsScrolled
+                                      ? Theme.of(context).textTheme.title
+                                      : Theme.of(context).textTheme.display1,
+                                  child: Text("Browse"),
                                 ),
+                              ),
+                            ),
+                          ),
                         ],
                         body: ListView.builder(
                           padding: EdgeInsets.only(

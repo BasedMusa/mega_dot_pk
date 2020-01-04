@@ -32,7 +32,7 @@ class BrandedErrorLogo extends StatelessWidget {
               ),
               child: showRefreshIcon
                   ? Icon(
-                     NativeIcons.refresh(),
+                      NativeIcons.refresh(),
                       color: Theme.of(context).errorColor,
                     )
                   : Container(),
