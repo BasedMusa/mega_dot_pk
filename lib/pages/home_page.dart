@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
@@ -6,7 +8,7 @@ import 'package:mega_dot_pk/widgets/category_list_item.dart';
 import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
-import 'package:mega_dot_pk/widgets/search_icon.dart';
+import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
@@ -22,26 +24,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageController _pageViewController =
-      PageController(initialPage: 2, keepPage: true);
+      PageController(initialPage: 1, keepPage: true);
 
-  int _pageIndex = 2;
+  int _pageIndex = 1;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: _appBar(),
-        bottomNavigationBar: _bottomNavigationBar(),
         body: _body(),
-        backgroundColor: Colors.white,
-      );
-
-  _appBar() => AppBar(
-        elevation: 0.6,
-        centerTitle: true,
-//        title: FadeInImage(
-//          image: AssetImage("assets/images/wordmark.png"),
-//          placeholder: MemoryImage(kTransparentImage),
-//          height: sizeConfig.height(.025),
-//        ),
+        bottomNavigationBar: _bottomNavigationBar(),
+        backgroundColor: Theme.of(context).canvasColor,
       );
 
   _bottomNavigationBar() => _BottomNavigationBar(
@@ -54,21 +45,10 @@ class _HomePageState extends State<HomePage> {
           controller: _pageViewController,
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            _searchPage(),
             _homePage(),
             _browsePage(),
-            _favouritesPage(),
             _profilePage(),
           ],
-        ),
-      );
-
-  _searchPage() => Container(
-        child: Center(
-          child: Text(
-            "Search",
-            style: Theme.of(context).textTheme.display1,
-          ),
         ),
       );
 
@@ -80,10 +60,19 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Column(
             children: [
+              Container(
+                margin: EdgeInsets.only(
+                  top: sizeConfig.height(.0015) + sizeConfig.safeArea.top,
+                ),
+                child: Text(
+                  "Home",
+                  style: Theme.of(context).textTheme.title,
+                ),
+              ),
               LightCTAButton(
                 text: "Shop Now",
                 icon: Icons.arrow_forward_ios,
-                onTap: () => _onPageChanged(2),
+                onTap: () => _onPageChanged(1),
               ),
               auth.isAuthorized == false
                   ? LightCTAButton(
@@ -103,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: LightCTAButton(
                       text: "Call",
-                      icon: Icons.call,
+                      icon: NativeIcons.callSolid(),
                       onTap: () => _launchURL(Constants.landlinePhoneNumber),
                       color: Colors.green,
                     ),
@@ -137,43 +126,63 @@ class _HomePageState extends State<HomePage> {
                 : bloc.taskStatus.error
                     ? BrandedErrorPage(bloc.taskStatus, bloc.loadData)
                     : NestedScrollView(
-                        headerSliverBuilder: (context, _) => [
-                          SliverAppBar(
-                            elevation: 0,
-                            stretch: false,
-                            centerTitle: true,
-                            expandedHeight: sizeConfig.height(.15),
-                            flexibleSpace: Container(
-                              child: Center(
-                                child: Text(
-                                  "Browse",
-                                  style: Theme.of(context).textTheme.display1,
+                        headerSliverBuilder:
+                            (BuildContext context, bool innerBoxIsScrolled) => [
+                          defaultTargetPlatform == TargetPlatform.iOS
+                              ? CupertinoSliverNavigationBar(
+                                  largeTitle: Center(
+                                    child: Text("Browse"),
+                                  ),
+                                  middle: AnimatedOpacity(
+                                    duration: Constants.animationDuration,
+                                    opacity: innerBoxIsScrolled ? 1 : 0,
+                                    child: Text(
+                                      "Browse",
+                                      style: Theme.of(context).textTheme.title,
+                                    ),
+                                  ),
+                                )
+                              : SliverAppBar(
+                                  elevation: 0.4,
+                                  stretch: false,
+                                  centerTitle: true,
+                                  primary: true,
+                                  pinned: true,
+                                  expandedHeight: sizeConfig.height(.35),
+                                  flexibleSpace: Container(
+                                    padding: EdgeInsets.only(
+                                      top: sizeConfig.height(.035),
+                                    ),
+                                    child: Center(
+                                      child: AnimatedDefaultTextStyle(
+                                        duration: Duration(milliseconds: 100),
+                                        curve: Curves.easeInQuint,
+                                        style: innerBoxIsScrolled
+                                            ? Theme.of(context).textTheme.title
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .display1,
+                                        child: Text("Browse"),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ],
                         body: ListView.builder(
-                          padding: EdgeInsets.symmetric(
-                            vertical: sizeConfig.height(.03),
+                          padding: EdgeInsets.only(
+                            top: defaultTargetPlatform == TargetPlatform.iOS
+                                ? sizeConfig.height(.03)
+                                : 0,
+                            bottom: sizeConfig.height(.03),
                           ),
                           physics: BouncingScrollPhysics(),
                           itemCount: bloc.categories.length,
                           itemBuilder: (context, i) => CategoryListItem(
                             bloc.categories[i],
-                            searchButtonCallback: ()=>_onPageChanged(0),
+                            searchButtonCallback: () => _onPageChanged(1),
                           ),
                         ),
                       ),
-          ),
-        ),
-      );
-
-  _favouritesPage() => Container(
-        child: Center(
-          child: Text(
-            "Favourites",
-            style: Theme.of(context).textTheme.display1,
           ),
         ),
       );
@@ -218,80 +227,114 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     {
-      Color selectedIconColor = Theme.of(context).primaryColor;
-      Color unselectedIconColor = Colors.black;
+      bool _isIOS = defaultTargetPlatform == TargetPlatform.iOS;
 
-      List<IconData> icons = [
-        SearchIcon.iconData(),
-        Icons.home,
-        Icons.shopping_basket,
-        widget.selectedIndex == 3 ? Icons.favorite : Icons.favorite_border,
-        widget.selectedIndex == 4 ? Icons.person : Icons.person_outline
+      Color _selectedIconColor = Theme.of(context).primaryColor;
+      Color _unselectedIconColor = _isIOS
+          ? Theme.of(context).unselectedWidgetColor
+          : Theme.of(context).textTheme.title.color;
+
+      double _indicatorSize = _isIOS ? 2.5 : 4;
+
+      List<IconData> _icons = [
+        NativeIcons.home(),
+        widget.selectedIndex == 1
+            ? NativeIcons.browseSolid()
+            : NativeIcons.browse(),
+        widget.selectedIndex == 2
+            ? NativeIcons.personSolid()
+            : NativeIcons.person(),
       ];
 
-      double blockWidth = sizeConfig.width(1) / icons.length;
+      List<String> _titles = ["Home", "Browse", "Profile"];
+
+      double blockWidth = sizeConfig.width(1) / _icons.length;
       double selectedBlockEndPosition = blockWidth * (widget.selectedIndex + 1);
 
       double indicatorLeftMargin =
           selectedBlockEndPosition - (blockWidth / 2) - 2;
-
-      return Container(
-        padding: EdgeInsets.only(
-          top: sizeConfig.height(.015),
-          bottom: sizeConfig.height(.015) + sizeConfig.safeArea.bottom,
-        ),
-        decoration: BoxDecoration(
-          border: Border.all(
-              color: Theme.of(context).unselectedWidgetColor.withOpacity(.1)),
-          borderRadius: BorderRadius.circular(sizeConfig.height(.039)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(
-                  icons.length,
-                  (i) => Flexible(
-                    child: AnimatedContainer(
-                      duration: Constants.animationDuration,
-                      width: blockWidth,
-                      padding: widget.selectedIndex == i
-                          ? EdgeInsets.only(
-                              bottom: sizeConfig.height(.005),
-                            )
-                          : EdgeInsets.only(
-                              top: sizeConfig.height(.005),
-                            ),
-                      child: IconButton(
-                        icon: Icon(
-                          icons[i],
-                          color: widget.selectedIndex == i
-                              ? selectedIconColor
-                              : unselectedIconColor,
+      if (_isIOS)
+        return CupertinoTabBar(
+            onTap: (int i) => widget.onPageChanged(i),
+            items: List.generate(
+              _icons.length,
+              (i) => BottomNavigationBarItem(
+                icon: Icon(
+                  _icons[i],
+                  color: widget.selectedIndex == i
+                      ? _selectedIconColor
+                      : _unselectedIconColor,
+                ),
+                title: Text(
+                  _titles[i],
+                  style: TextStyle(
+                    color: widget.selectedIndex == i
+                        ? _selectedIconColor
+                        : _unselectedIconColor,
+                  ),
+                ),
+              ),
+            ));
+      else
+        return AnimatedContainer(
+          duration: Constants.animationDuration,
+          padding: EdgeInsets.only(
+            top: sizeConfig.height(.015),
+            bottom: sizeConfig.height(.015) + sizeConfig.safeArea.bottom,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).dividerColor,
+            ),
+            borderRadius: BorderRadius.circular(sizeConfig.height(.039)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: List.generate(
+                    _icons.length,
+                    (i) => Flexible(
+                      child: AnimatedContainer(
+                        duration: Constants.animationDuration,
+                        width: blockWidth,
+                        padding: widget.selectedIndex == i
+                            ? EdgeInsets.only(
+                                bottom: sizeConfig.height(.005),
+                              )
+                            : EdgeInsets.only(
+                                top: sizeConfig.height(.005),
+                              ),
+                        child: IconButton(
+                          icon: Icon(
+                            _icons[i],
+                            color: widget.selectedIndex == i
+                                ? _selectedIconColor
+                                : _unselectedIconColor,
+                          ),
+                          onPressed: () => widget.onPageChanged(i),
                         ),
-                        onPressed: () => widget.onPageChanged(i),
                       ),
                     ),
-                  ),
-                )),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 200),
-              margin: EdgeInsets.only(
-                left: indicatorLeftMargin,
+                  )),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                margin: EdgeInsets.only(
+                  left: indicatorLeftMargin,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                height: _indicatorSize,
+                width: _indicatorSize,
               ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                shape: BoxShape.circle,
-              ),
-              height: 4,
-              width: 4,
-            )
-          ],
-        ),
-      );
+            ],
+          ),
+        );
     }
   }
 }

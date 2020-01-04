@@ -19,16 +19,19 @@ class BrandedImage extends StatelessWidget {
         width: width,
         alignment: Alignment.center,
         enableRefresh: true,
-        image: AdvancedNetworkImage(url, useDiskCache: false),
+        image: AdvancedNetworkImage(url, useDiskCache: true),
         loadingWidget: _center(child: BrandedLoadingIndicator()),
-        placeholder: _center(child: BrandedErrorLogo(showRefreshIcon: true,)),
+        placeholder: _center(child: BrandedErrorLogo(showRefreshIcon: true)),
       );
 
   _center({@required Widget child}) => Container(
         height: height,
         width: width,
         child: Center(
-          child: child,
+          child: FittedBox(
+            child: child,
+            fit: BoxFit.contain,
+          ),
         ),
       );
 }

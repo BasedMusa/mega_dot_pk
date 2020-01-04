@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/pages/category_page.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
-import 'package:mega_dot_pk/widgets/transparent_image.dart';
+import 'package:mega_dot_pk/widgets/branded_image.dart';
 
 import '../pages/category_page.dart';
 
@@ -29,53 +31,73 @@ class _CategoryListItemState extends State<CategoryListItem> {
   };
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: EdgeInsets.only(
-          bottom: sizeConfig.width(.05),
-          right: sizeConfig.width(.05),
-          left: sizeConfig.width(.05),
+  Widget build(BuildContext context) {
+    final bool _isIOS = defaultTargetPlatform == TargetPlatform.iOS;
+
+    Widget _categoryName = Expanded(
+      child: Container(
+        padding: EdgeInsets.only(
+          left: _isIOS ? sizeConfig.width(.0125) : sizeConfig.width(.03),
         ),
-        child: Material(
+        child: Text(
+          widget.category.name,
+          style: Theme.of(context).textTheme.title,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+      ),
+    );
+
+    Widget _categoryImage = BrandedImage(
+      thumbnailURLs[widget.category.id],
+      fit: BoxFit.contain,
+      height: sizeConfig.height(.085),
+      width: sizeConfig.height(.085),
+    );
+
+    /*iOS Only*/
+    Widget _viewButton = Padding(
+      padding: EdgeInsets.only(
+        right: sizeConfig.width(.025),
+      ),
+      child: Icon(Icons.navigate_next),
+    );
+
+    return Container(
+      width: double.maxFinite,
+      margin: EdgeInsets.only(
+        bottom: sizeConfig.width(.05),
+        right: sizeConfig.width(.05),
+        left: sizeConfig.width(.05),
+      ),
+      child: Material(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: InkWell(
+          onTap: _onTap,
+          splashColor: Theme.of(context).splashColor,
           borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: InkWell(
-            onTap: _onTap,
-            splashColor: Theme.of(context).splashColor,
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    width: double.maxFinite,
-                    padding: EdgeInsets.symmetric(
-                      vertical: sizeConfig.height(.025),
-                      horizontal: sizeConfig.width(.065),
-                    ),
-                    child: Text(
-                      widget.category.name,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                  ),
-                  Positioned(
-                    right: 15,
-                    top: 10,
-                    bottom: 10,
-                    child: Container(
-                      width: sizeConfig.height(.1),
-                      height: sizeConfig.height(.1),
-                      child: FadeInImage(
-                        placeholder: MemoryImage(kTransparentImage),
-                        image: NetworkImage(thumbnailURLs[widget.category.id]),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: sizeConfig.width(.025),
+            ),
+            child: Row(
+              children: _isIOS
+                  ? [
+                      _categoryImage,
+                      _categoryName,
+                      _viewButton,
+                    ]
+                  : [
+                      _categoryName,
+                      _categoryImage,
+                    ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Future<void> _onTap() async {
     CategoryPageReturnType returnType = await Navigator.push(

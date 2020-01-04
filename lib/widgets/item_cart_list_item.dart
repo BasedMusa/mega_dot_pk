@@ -141,10 +141,11 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
                     ),
                     child: Text(
                       "${widget.itemCounter} Items",
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: 12,
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                          ),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
                     ),
                   )
                 : Container(),

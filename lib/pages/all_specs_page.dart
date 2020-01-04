@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
-import 'package:mega_dot_pk/widgets/search_icon.dart';
+import 'package:mega_dot_pk/widgets/native_icons.dart';
 
 import '../utils/globals.dart';
 
@@ -41,7 +41,7 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
           AnimatedCrossFade(
             firstChild: IconButton(
                 icon: Icon(
-                  SearchIcon.iconData(),
+                  NativeIcons.search(),
                 ),
                 onPressed: () async {
                   await _pageScrollController.animateTo(0,

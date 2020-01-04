@@ -12,7 +12,7 @@ import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/branded_fab.dart';
 import 'package:mega_dot_pk/widgets/item_grid_item.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
-import 'package:mega_dot_pk/widgets/search_icon.dart';
+import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
 import '../utils/globals.dart';
@@ -60,7 +60,7 @@ class _CategoryPageState extends State<CategoryPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: <Widget>[
           IconButton(
-            icon: SearchIcon(),
+            icon: Icon(NativeIcons.search()),
             onPressed: () =>
                 Navigator.pop(context, CategoryPageReturnType.Search),
           )
@@ -322,13 +322,15 @@ class __SortButtonState extends State<_SortButton> {
     List<Sorting> _sortingOptions = [
       Sorting(0, "Name A - Z"),
       Sorting(1, "Name Z - A"),
-      Sorting(2, "Price \$ - \$\$\$"),
-      Sorting(3, "Price \$\$\$ - \$"),
+      Sorting(2, "Price Lowest First"),
+      Sorting(3, "Price Highest First"),
     ];
 
     if (bloc.sorting != null) _sortingOptions.add(Sorting(4, "Clear"));
 
-    int value = await showMenu(
+    int value;
+
+    value = await showMenu(
       context: context,
       position: buttonBottomLeftPosition(),
       initialValue: bloc.sorting?.value,
