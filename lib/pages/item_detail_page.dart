@@ -7,6 +7,7 @@ import 'package:mega_dot_pk/blocs/item_details_bloc.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/pages/all_specs_page.dart';
 import 'package:mega_dot_pk/pages/cart_page.dart';
+import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
@@ -51,7 +52,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     ? Theme.of(context).primaryColor
                     : Theme.of(context).primaryIconTheme.color,
               ),
-              onPressed: auth.isAuthorized
+              onPressed: Provider.of<AuthenticationProviderBLOC>(context).isAuthorized
                   ? () => setState(() => _bookmarked = !_bookmarked)
                   : () => Navigator.push(
                         context,

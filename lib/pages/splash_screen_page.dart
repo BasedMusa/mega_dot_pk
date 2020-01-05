@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/pages/home_page.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
-import 'package:mega_dot_pk/utils/authentication_provider.dart';
+import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/size_config.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreenPage extends StatefulWidget {
   @override
@@ -13,14 +14,10 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
-  void initState() {
-    _initApp();
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     sizeConfig = SizeConfig.init(context);
+    _initApp();
+
     super.didChangeDependencies();
   }
 
@@ -36,15 +33,15 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       );
 
   Future<void> _initApp() async {
-    AuthenticationProvider _auth = await AuthenticationProvider.autoLogin();
-    auth = _auth;
+    AuthenticationProviderBLOC auth =
+        Provider.of<AuthenticationProviderBLOC>(context);
+    await auth.autoLogin();
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => auth != null && auth.isAuthorized
-            ? HomePage()
-            : AccountPage(initialPage: true),
+        builder: (context) =>
+            auth.isAuthorized ? HomePage() : AccountPage(initialPage: true),
       ),
     );
   }

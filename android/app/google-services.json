@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "49242108561",
+    "firebase_url": "https://mega-pk.firebaseio.com",
+    "project_id": "mega-pk",
+    "storage_bucket": "mega-pk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49242108561:android:a276a965972991188f8530",
+        "android_client_info": {
+          "package_name": "pk.mega.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49242108561-iukslp8hb1ogt37enqqhb0rbhh02b54v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pk.mega.mobile",
+            "certificate_hash": "34520b9266bba46afc04b4773550461d29c23145"
+          }
+        },
+        {
+          "client_id": "49242108561-tiu77g4ee0dbf4mihpippfe5k22kusp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpSBLkTa_pUlVVVbA7VMNgrQvLdS2r2jA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49242108561-tiu77g4ee0dbf4mihpippfe5k22kusp3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "49242108561-nbk2ma7t7ec63hvoc15a514rsfg3annd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "pk.mega.mobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

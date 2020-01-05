@@ -520,18 +520,16 @@ class __FilterPageState extends State<_FilterPage> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                Icons.hourglass_empty,
-                color: Theme.of(context).textTheme.caption.color,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: sizeConfig.height(.01),
-                ),
-                child: Text(
-                  "Sorry, no filters are available.",
-                  style: Theme.of(context).textTheme.caption,
+              Text(
+                "No Filters Found",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  letterSpacing: -2,
+                  fontWeight: FontWeight.w600,
+                  fontSize: sizeConfig.text(30),
+                  color: Theme.of(context).disabledColor,
                 ),
               ),
             ],

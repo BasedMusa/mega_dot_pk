@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 
-class LoginPage extends StatefulWidget {
+class SignInPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignInPageState extends State<SignInPage> {
   bool _obscureText = true;
 
   TextEditingController _emailController;

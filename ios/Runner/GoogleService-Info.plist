@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>49242108561-nbk2ma7t7ec63hvoc15a514rsfg3annd.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.49242108561-nbk2ma7t7ec63hvoc15a514rsfg3annd</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>49242108561-iukslp8hb1ogt37enqqhb0rbhh02b54v.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDfl9d2RLPIc0BFwouF9uPCjD86jEl7uro</string>
+	<key>GCM_SENDER_ID</key>
+	<string>49242108561</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>pk.mega.mobile</string>
+	<key>PROJECT_ID</key>
+	<string>mega-pk</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mega-pk.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:49242108561:ios:80d6ab596a8163eb8f8530</string>
+	<key>DATABASE_URL</key>
+	<string>https://mega-pk.firebaseio.com</string>
+</dict>
+</plist>

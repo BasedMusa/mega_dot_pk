@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/category_list_item.dart';
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Icons.arrow_forward_ios,
                 onTap: () => _onPageChanged(1),
               ),
-              auth.isAuthorized == false
+              Provider.of<AuthenticationProviderBLOC>(context).isAuthorized == false
                   ? LightCTAButton(
                       text: "Get More Features By Signing Up!",
                       icon: Icons.person_add,
@@ -104,8 +104,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: LightCTAButton(
-                      text: "Our Social",
-                      icon: FontAwesomeIcons.facebookF,
+                      text: "Our Facebook",
+                      icon: Icons.whatshot,
                       onTap: () =>
                           _launchURL("https://www.facebook.com/mega.pk"),
                       color: Colors.blue[700],

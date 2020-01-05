@@ -29,7 +29,6 @@ class Item {
         this.thumbnailImageURL = json["t_img_url"];
 }
 
-
 class Category {
   String id;
   String pid;
@@ -66,6 +65,11 @@ class AsyncTaskStatus {
   bool error;
   String errorMessage;
 
+  AsyncTaskStatus.clear()
+      : this.loading = false,
+        this.error = false,
+        this.errorMessage = null;
+
   AsyncTaskStatus.loading()
       : this.loading = true,
         this.error = false,
@@ -93,10 +97,4 @@ class DataFunctionResponse<T> {
 
   DataFunctionResponse.error({this.errorMessage = "Something Broke"})
       : this.success = false;
-}
-
-class AppUser {
-  AppUser.fromJSON(Map json);
-
-  Map toJSON() => {};
 }

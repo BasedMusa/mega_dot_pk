@@ -15,23 +15,24 @@ class _BrandedFABState extends State<BrandedFAB> {
   @override
   Widget build(BuildContext context) => Container(
         margin: sizeConfig.safeArea,
-        decoration: BoxDecoration(
+        child: Material(
           borderRadius: BorderRadius.circular(20),
           color: widget.onPressed != null
               ? Theme.of(context).primaryColor
               : Theme.of(context).disabledColor.withOpacity(.15),
-        ),
-        child: InkWell(
-          onTap: widget.onPressed,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Icon(
-              widget.icon,
-              color: widget.onPressed != null
-                  ? Theme.of(context).canvasColor
-                  : Theme.of(context).disabledColor,
-              size: 35,
+          child: InkWell(
+            onTap: widget.onPressed,
+            splashColor: Theme.of(context).canvasColor.withOpacity(.5),
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(
+                widget.icon,
+                color: widget.onPressed != null
+                    ? Theme.of(context).canvasColor
+                    : Theme.of(context).disabledColor,
+                size: 35,
+              ),
             ),
           ),
         ),

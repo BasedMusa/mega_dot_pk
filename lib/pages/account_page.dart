@@ -2,10 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mega_dot_pk/pages/home_page.dart';
-import 'package:mega_dot_pk/pages/login_page.dart';
-import 'package:mega_dot_pk/pages/sign_up_page.dart';
+import 'package:mega_dot_pk/pages/sign_in_page.dart';
+import 'package:mega_dot_pk/utils/cta_button.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
-import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 
 class AccountPage extends StatefulWidget {
@@ -18,7 +17,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-
   @override
   Widget build(BuildContext context) => Scaffold(
         body: _body(),
@@ -27,14 +25,6 @@ class _AccountPageState extends State<AccountPage> {
   _body() => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                "https://images.pexels.com/photos/973506/pexels-photo-973506.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
           padding: EdgeInsets.symmetric(
             horizontal: sizeConfig.width(.05),
           ),
@@ -59,8 +49,7 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
               Spacer(),
-              _signUpButton(),
-              _logInButton(),
+              _signInButton(),
               Padding(
                 padding: EdgeInsets.only(
                   bottom: sizeConfig.safeArea.bottom + sizeConfig.height(.05),
@@ -71,50 +60,12 @@ class _AccountPageState extends State<AccountPage> {
         ),
       );
 
-  _signUpButton() => Container(
-        width: double.maxFinite,
-        child: LightCTAButton(
-          text: "Sign Up",
-          onTap: () => Navigator.push(
-            context,
-            SlideUpPageRoute(
-              child: SignUpPage(),
-            ),
-          ),
-          color: Colors.white,
-        ),
-      );
-
-  _logInButton() => Container(
-        margin: EdgeInsets.only(
-          top: sizeConfig.height(.02),
-        ),
-        child: InkWell(
-          onTap: () => Navigator.push(
-            context,
-            SlideUpPageRoute(
-              child: LoginPage(),
-            ),
-          ),
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: sizeConfig.width(.06),
-              vertical: sizeConfig.height(.025),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: Colors.white,
-            ),
-            child: Center(
-              child: Text(
-                "Log In",
-                style: Theme.of(context).textTheme.button.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ),
+  _signInButton() => CTAButton(
+        text: "Sign In",
+        onTap: () => Navigator.push(
+          context,
+          SlideUpPageRoute(
+            child: SignInPage(),
           ),
         ),
       );

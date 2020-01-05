@@ -56,13 +56,32 @@ class _CategoryListItemState extends State<CategoryListItem> {
     );
 
     /*iOS Only*/
-    Widget _viewButton = Padding(
+    Widget _navigationIcon = Padding(
       padding: EdgeInsets.only(
         right: sizeConfig.width(.025),
       ),
-      child: Icon(Icons.navigate_next),
+      child: Icon(
+        Icons.navigate_next,
+        color: Theme.of(context).iconTheme.color,
+      ),
     );
-
+    Widget _content = Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: sizeConfig.width(.025),
+      ),
+      child: Row(
+        children: _isIOS
+            ? [
+                _categoryImage,
+                _categoryName,
+                _navigationIcon,
+              ]
+            : [
+                _categoryName,
+                _categoryImage,
+              ],
+      ),
+    );
     return Container(
       width: double.maxFinite,
       margin: EdgeInsets.only(
@@ -70,32 +89,23 @@ class _CategoryListItemState extends State<CategoryListItem> {
         right: sizeConfig.width(.05),
         left: sizeConfig.width(.05),
       ),
-      child: Material(
-        borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: InkWell(
-          onTap: _onTap,
-          splashColor: Theme.of(context).splashColor,
-          borderRadius: BorderRadius.circular(10),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: sizeConfig.width(.025),
+      child: _isIOS
+          ? CupertinoButton(
+              padding: EdgeInsets.zero,
+              color: Theme.of(context).scaffoldBackgroundColor,
+              onPressed: _onTap,
+              child: _content,
+            )
+          : Material(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: InkWell(
+                onTap: _onTap,
+                splashColor: Theme.of(context).splashColor,
+                borderRadius: BorderRadius.circular(10),
+                child: _content,
+              ),
             ),
-            child: Row(
-              children: _isIOS
-                  ? [
-                      _categoryImage,
-                      _categoryName,
-                      _viewButton,
-                    ]
-                  : [
-                      _categoryName,
-                      _categoryImage,
-                    ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 

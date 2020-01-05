@@ -28,7 +28,7 @@ class BrandedErrorLogo extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).canvasColor,
               ),
               child: showRefreshIcon
                   ? Icon(
