@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
+import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/widgets/branded_error_page.dart';
@@ -74,7 +75,8 @@ class _HomePageState extends State<HomePage> {
                 icon: Icons.arrow_forward_ios,
                 onTap: () => _onPageChanged(1),
               ),
-              Provider.of<AuthenticationProviderBLOC>(context).isAuthorized == false
+              Provider.of<AuthenticationProviderBLOC>(context).isAuthorized ==
+                      false
                   ? LightCTAButton(
                       text: "Get More Features By Signing Up!",
                       icon: Icons.person_add,
@@ -171,14 +173,31 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  _profilePage() => Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: sizeConfig.width(.1),
-        ),
-        child: Center(
-          child: Text(
-            "Login",
-            style: Theme.of(context).textTheme.display1,
+  _profilePage() => Consumer<AuthenticationProviderBLOC>(
+        builder: (_, bloc, __) => Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: sizeConfig.width(.1),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  bloc.isAuthorized
+                      ? bloc.user.displayName ?? "No Name User"
+                      : "Login",
+                  style: Theme.of(context).textTheme.display1,
+                ),
+                bloc.isAuthorized
+                    ? CTAButton(
+                        text: "Sign Out",
+                        onTap: () {
+                          bloc.signOut();
+                        },
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         ),
       );

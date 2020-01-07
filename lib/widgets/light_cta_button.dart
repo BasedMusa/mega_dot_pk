@@ -5,15 +5,18 @@ class LightCTAButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onTap;
+  final bool multiline;
   final Color color;
 
   LightCTAButton({
     this.icon,
     this.text,
+    this.multiline = false,
     @required this.onTap,
     this.color,
   }) {
-    assert(this.icon != null || this.text != null, "You need to assign either an icon or text.");
+    assert(this.icon != null || this.text != null,
+        "You need to assign either an icon or text.");
   }
 
   @override
@@ -23,10 +26,10 @@ class LightCTAButton extends StatelessWidget {
         ),
         child: Material(
           color: _color(context).withOpacity(0.15),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(12),
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(12),
             splashColor: _color(context).withOpacity(.175),
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -34,26 +37,37 @@ class LightCTAButton extends StatelessWidget {
                 vertical: sizeConfig.height(.025),
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   text != null
-                      ? Text(
-                          text,
-                          style: Theme.of(context).textTheme.button.copyWith(
-                                color: _color(context),
-                                fontWeight: FontWeight.w600,
-                              ),
+                      ? Expanded(
+                          child: Align(
+                            alignment: icon == null
+                                ? Alignment.center
+                                : Alignment.centerLeft,
+                            child: Text(
+                              text,
+                              style:
+                                  Theme.of(context).textTheme.button.copyWith(
+                                        color: _color(context),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                            ),
+                          ),
                         )
                       : Container(),
-                  text != null && icon != null ? Spacer() : Container(),
                   icon != null
-                      ? Icon(
-                          icon,
-                          color: _color(context),
+                      ? Padding(
+                          padding:
+                              EdgeInsets.only(left: sizeConfig.width(.025)),
+                          child: Icon(
+                            icon,
+                            color: _color(context),
+                          ),
                         )
                       : Container(),
                 ],
@@ -63,5 +77,7 @@ class LightCTAButton extends StatelessWidget {
         ),
       );
 
-  Color _color(BuildContext context) => color ?? Theme.of(context).primaryColor;
+  Color _color(BuildContext context) => onTap != null
+      ? color ?? Theme.of(context).primaryColor
+      : Theme.of(context).disabledColor;
 }

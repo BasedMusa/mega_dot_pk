@@ -76,7 +76,7 @@ class AsyncTaskStatus {
         this.errorMessage = null;
 
   AsyncTaskStatus.error([this.errorMessage = "Something Went Wrong"])
-      : this.loading = true,
+      : this.loading = false,
         this.error = true;
 
   AsyncTaskStatus.fromDataFunctionResponse(DataFunctionResponse response)

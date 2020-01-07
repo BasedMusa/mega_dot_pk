@@ -6,7 +6,9 @@ import 'package:mega_dot_pk/utils/mixins.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
 class AuthenticationProviderBLOC extends ChangeNotifier with AsyncTaskMixin {
-  bool get isAuthorized => user == null;
+  bool get isAuthorized => user != null;
+
+  String verificationID;
 
   FirebaseUser _user;
 
@@ -35,41 +37,53 @@ class AuthenticationProviderBLOC extends ChangeNotifier with AsyncTaskMixin {
   }
 
   Future<void> signOut() async {
-    user = null;
     firebaseAuth.signOut();
+    user = null;
   }
 
   Future<void> autoLogin() async => user = await firebaseAuth.currentUser();
 
-  Future<void> signIn(String phoneNumber) async {
+  Future<void> sendCodeToPhoneNumber(
+      String phoneNumber,
+      VoidCallback onCodeSent,
+      AuthSuccessCallback onAuthenticationSuccessful) async {
     try {
       codeSent = false;
+      verificationID = null;
       autoRetrievalTimedOut = false;
       taskStatus = AsyncTaskStatus.loading();
 
       PhoneVerificationCompleted _verificationCompleted =
-          (AuthCredential authCredential) async {
-        AuthResult authResult =
-            await firebaseAuth.signInWithCredential(authCredential);
-
-        user = authResult.user;
-
-        taskStatus = AsyncTaskStatus.clear();
-      };
+          (AuthCredential authCredential) =>
+              signInWithCredential(authCredential, onAuthenticationSuccessful);
 
       PhoneVerificationFailed _verificationFailed =
           (AuthException authException) {
-        taskStatus = AsyncTaskStatus.clear();
+        bool isNotCancelledByUser =
+            !authException.message.contains("cancelled by");
+        if (isNotCancelledByUser) {
+          String errorMessage = authException.code == "invalidPhoneNumber"
+              ? "Invalid phone number format."
+              : authException.message;
+
+          taskStatus = AsyncTaskStatus.error(errorMessage);
+          print(
+              "AuthenticationProviderBLOC: SignIn: PhoneVerificationFailed: ${authException.code} : ${authException.message}");
+        } else
+          taskStatus = AsyncTaskStatus.clear();
       };
 
       PhoneCodeSent _codeSent =
           (String verificationId, [int forceResendingToken]) {
+        verificationID = verificationId;
         codeSent = true;
         taskStatus = AsyncTaskStatus.clear();
+        onCodeSent();
       };
 
       PhoneCodeAutoRetrievalTimeout _codeAutoRetrievalTimeout =
           (String verificationId) {
+        verificationID = verificationId;
         autoRetrievalTimedOut = true;
       };
 
@@ -86,4 +100,40 @@ class AuthenticationProviderBLOC extends ChangeNotifier with AsyncTaskMixin {
       taskStatus = AsyncTaskStatus.clear();
     }
   }
+
+  void verifyCode(String code, AuthSuccessCallback onAuthenticationSuccessful) {
+    assert(verificationID != null);
+
+    AuthCredential authCredential = PhoneAuthProvider.getCredential(
+        verificationId: verificationID, smsCode: code);
+
+    signInWithCredential(authCredential, onAuthenticationSuccessful);
+  }
+
+  Future<void> signInWithCredential(AuthCredential authCredential,
+      AuthSuccessCallback onAuthenticationSuccessful) async {
+    try {
+      taskStatus = AsyncTaskStatus.loading();
+
+      AuthResult authResult =
+          await firebaseAuth.signInWithCredential(authCredential);
+
+      FirebaseUser user = authResult.user;
+
+      if (user != null) {
+        taskStatus = AsyncTaskStatus.clear();
+        _user = user;
+        onAuthenticationSuccessful(user);
+      }
+    } catch (e) {
+      String errorMessage = e.code == "ERROR_INVALID_VERIFICATION_CODE"
+          ? "Invalid verification code. Please make sure to use the that is sent code via SMS."
+          : e.message;
+      taskStatus = AsyncTaskStatus.error(errorMessage);
+      print(
+          "AuthenticationProvider: SignInWithCredential: UnexpectedErrorOccurred: ${e.code} : ${e.message}");
+    }
+  }
 }
+
+typedef AuthSuccessCallback(FirebaseUser user);

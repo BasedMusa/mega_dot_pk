@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
 import 'package:mega_dot_pk/pages/splash_screen_page.dart';
@@ -20,6 +21,8 @@ class _MegaDotPKAppState extends State<MegaDotPKApp> {
           ChangeNotifierProvider<CartBLOC>(create: (_) => CartBLOC()),
           ChangeNotifierProvider<CategoriesBLOC>(
               create: (_) => CategoriesBLOC()),
+          ChangeNotifierProvider<AuthenticationProviderBLOC>(
+              create: (_) => AuthenticationProviderBLOC()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

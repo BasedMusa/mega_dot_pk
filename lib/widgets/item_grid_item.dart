@@ -33,10 +33,10 @@ class _ItemGridItemState extends State<ItemGridItem> {
           child: Consumer<ItemDetailsBLOC>(
             builder: (_, bloc, __) => InkWell(
               onTap: () => _onTap(bloc),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                   color: Theme.of(context).canvasColor,
                   border: Border.all(
                     color: Theme.of(context).dividerColor,
