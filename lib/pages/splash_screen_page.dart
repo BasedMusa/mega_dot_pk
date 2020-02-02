@@ -16,6 +16,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void didChangeDependencies() {
     sizeConfig = SizeConfig.init(context);
+
     _initApp();
 
     super.didChangeDependencies();
@@ -34,7 +35,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   Future<void> _initApp() async {
     AuthenticationProviderBLOC auth =
-        Provider.of<AuthenticationProviderBLOC>(context);
+        Provider.of<AuthenticationProviderBLOC>(context, listen: false);
 
     await auth.autoLogin();
 

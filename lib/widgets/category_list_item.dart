@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
-import 'package:mega_dot_pk/pages/category_page.dart';
+import 'package:mega_dot_pk/pages/browse_category_page.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/branded_image.dart';
 
-import '../pages/category_page.dart';
+import '../pages/browse_category_page.dart';
 
 class CategoryListItem extends StatefulWidget {
   final Category category;
@@ -113,7 +113,7 @@ class _CategoryListItemState extends State<CategoryListItem> {
     CategoryPageReturnType returnType = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategoryPage(widget.category),
+            builder: (context) => BrowseCategoryPage(widget.category),
           ),
         ) ??
         CategoryPageReturnType.Back;

@@ -17,16 +17,16 @@ import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
 import '../utils/globals.dart';
 
-class CategoryPage extends StatefulWidget {
+class BrowseCategoryPage extends StatefulWidget {
   final Category category;
 
-  CategoryPage(this.category);
+  BrowseCategoryPage(this.category);
 
   @override
-  _CategoryPageState createState() => _CategoryPageState();
+  _BrowseCategoryPageState createState() => _BrowseCategoryPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _BrowseCategoryPageState extends State<BrowseCategoryPage> {
   ScrollController _headerScrollController = ScrollController();
 
   bool _headerScrolledOver = false;

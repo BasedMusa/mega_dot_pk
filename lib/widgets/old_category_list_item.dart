@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mega_dot_pk/pages/category_page.dart';
+import 'package:mega_dot_pk/pages/browse_category_page.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
@@ -98,7 +98,7 @@ class _OldCategoryListItemState extends State<OldCategoryListItem> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CategoryPage(widget.category),
+        builder: (context) => BrowseCategoryPage(widget.category),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
 mixin AsyncTaskMixin on ChangeNotifier {
-  AsyncTaskStatus _taskStatus;
+  AsyncTaskStatus _taskStatus = AsyncTaskStatus.clear();
 
   AsyncTaskStatus get taskStatus => _taskStatus;
 

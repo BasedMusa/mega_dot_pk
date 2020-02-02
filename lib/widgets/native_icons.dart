@@ -42,4 +42,8 @@ class NativeIcons {
   static IconData refresh() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.refresh
       : Icons.refresh;
+
+  static IconData back() => defaultTargetPlatform == TargetPlatform.iOS
+      ? CupertinoIcons.back
+      : Icons.arrow_back;
 }

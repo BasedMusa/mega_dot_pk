@@ -33,30 +33,36 @@ class CTAButton extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Color(0xFFFFA23F),
+            color: onTap != null
+                ? Color(0xFFFFA23F)
+                : Theme.of(context).disabledColor,
           ),
-          child: Text(text),
+          child: Center(child: Text(text)),
         ),
       ),
     );
 
     return _isIOS
-        ? Material(
-            borderRadius: BorderRadius.circular(18),
-            color: Theme.of(context).primaryColor,
-            child: InkWell(
-              onTap: onTap,
-              splashColor: Colors.white.withOpacity(.5),
-              borderRadius: BorderRadius.circular(18),
+        ? CupertinoButton(
+            color: Theme.of(context).cupertinoOverrideTheme.primaryColor,
+            borderRadius: BorderRadius.circular(12),
+            padding: EdgeInsets.zero,
+            onPressed: onTap,
+            child: Container(
               child: _content,
             ),
           )
-        : CupertinoButton(
-            color: Theme.of(context).primaryColor,
-            borderRadius: BorderRadius.circular(18),
-            padding: EdgeInsets.zero,
-            onPressed: onTap,
-            child: _content,
+        : Material(
+            borderRadius: BorderRadius.circular(12),
+            color: onTap != null
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).disabledColor,
+            child: InkWell(
+              onTap: onTap,
+              splashColor: Colors.white.withOpacity(.5),
+              borderRadius: BorderRadius.circular(12),
+              child: _content,
+            ),
           );
   }
 }
