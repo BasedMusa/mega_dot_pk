@@ -35,6 +35,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   Future<void> _initApp() async {
     AuthenticationProviderBLOC auth =
         Provider.of<AuthenticationProviderBLOC>(context);
+
     await auth.autoLogin();
 
     Navigator.pushReplacement(

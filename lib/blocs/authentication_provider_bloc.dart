@@ -6,7 +6,7 @@ import 'package:mega_dot_pk/utils/mixins.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
 class AuthenticationProviderBLOC extends ChangeNotifier with AsyncTaskMixin {
-  bool get isAuthorized => user == null;
+  bool get isAuthorized => user != null;
 
   FirebaseUser _user;
 
@@ -34,12 +34,15 @@ class AuthenticationProviderBLOC extends ChangeNotifier with AsyncTaskMixin {
     notifyListeners();
   }
 
+  Future<void> autoLogin() async {
+    FirebaseUser _user = await firebaseAuth.currentUser();
+    user = _user;
+  }
+
   Future<void> signOut() async {
     user = null;
     firebaseAuth.signOut();
   }
-
-  Future<void> autoLogin() async => user = await firebaseAuth.currentUser();
 
   Future<void> signIn(String phoneNumber) async {
     try {
