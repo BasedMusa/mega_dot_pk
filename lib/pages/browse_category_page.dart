@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/cupertino.dart' hide NestedScrollView;
 import 'package:flutter/material.dart' hide NestedScrollView;
+import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/blocs/filters_bloc.dart';
 import 'package:mega_dot_pk/blocs/items_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
@@ -10,6 +11,7 @@ import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/branded_fab.dart';
+import 'package:mega_dot_pk/widgets/cart_button.dart';
 import 'package:mega_dot_pk/widgets/item_grid_item.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
@@ -46,19 +48,19 @@ class _BrowseCategoryPageState extends State<BrowseCategoryPage> {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (_) => ItemsBLOC(widget.category),
+        create: (_) => ItemsBLOC(widget.category, Provider.of<AuthenticationProviderBLOC>(context).user.uid),
         child: Scaffold(
           body: _body(),
           floatingActionButton: _headerScrolledOver ? _fab() : null,
         ),
       );
 
-  _appBar() => SliverAppBar(
-        elevation: .4,
+  _appBar(bool hasItems) => SliverAppBar(
         centerTitle: true,
-        expandedHeight: sizeConfig.height(.4),
+        expandedHeight: sizeConfig.height(0.4),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: <Widget>[
+          CartButton(),
           IconButton(
             icon: Icon(NativeIcons.search()),
             onPressed: () =>
@@ -77,28 +79,30 @@ class _BrowseCategoryPageState extends State<BrowseCategoryPage> {
             ),
           ),
         ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: sizeConfig.width(.04),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(child: _SortButton()),
-                Padding(
+        bottom: hasItems == false
+            ? null
+            : PreferredSize(
+                preferredSize: Size.fromHeight(kToolbarHeight),
+                child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: sizeConfig.width(.025),
+                    horizontal: sizeConfig.width(.04),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: _SortButton()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: sizeConfig.width(.025),
+                        ),
+                      ),
+                      Expanded(
+                        child: _FilterButton(widget.category),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: _FilterButton(widget.category),
-                ),
-              ],
-            ),
-          ),
-        ),
+              ),
       );
 
   _fab() => BrandedFAB(
@@ -110,38 +114,55 @@ class _BrowseCategoryPageState extends State<BrowseCategoryPage> {
         ),
       );
 
-  _body() => NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) =>
-            [_appBar()],
-        controller: _headerScrollController,
-        body: Consumer<ItemsBLOC>(
-          builder: (context, bloc, _) => Container(
-            child: bloc.taskStatus.loading &&
-                    (bloc.items == null || bloc.items.isEmpty)
+  _body() => Consumer<ItemsBLOC>(
+        builder: (_, bloc, __) => NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) =>
+              [_appBar(bloc.hasItems)],
+          controller: _headerScrollController,
+          physics: !bloc.hasItems ? NeverScrollableScrollPhysics() : null,
+          body: Container(
+            child: bloc.taskStatus.loading
                 ? BrandedLoadingIndicator()
                 : bloc.taskStatus.error
                     ? BrandedErrorPage(bloc.taskStatus, bloc.loadData)
-                    : Stack(
-                        children: <Widget>[
-                          _ItemsGridView(bloc),
-                          AnimatedContainer(
-                            duration: Constants.animationDuration,
-                            height: _headerScrolledOver
-                                ? sizeConfig.safeArea.top +
-                                    sizeConfig.height(.035)
-                                : 0,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                    Colors.white.withOpacity(0),
-                                  ]),
+                    : bloc.hasItems && bloc.taskStatus.loading == false
+                        ? Stack(
+                            children: <Widget>[
+                              _ItemsGridView(bloc),
+                              AnimatedContainer(
+                                duration: Constants.animationDuration,
+                                height: _headerScrolledOver
+                                    ? sizeConfig.safeArea.top +
+                                        sizeConfig.height(.035)
+                                    : 0,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        Colors.white.withOpacity(0),
+                                      ]),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Padding(
+                          padding: EdgeInsets.only(
+                            top: sizeConfig.height(.1),
+                          ),
+                          child: Text(
+                            "No Products Found",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              letterSpacing: -2,
+                              fontWeight: FontWeight.w600,
+                              fontSize: sizeConfig.text(30),
+                              color: Theme.of(context).disabledColor,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
           ),
         ),
       );
@@ -193,7 +214,7 @@ class __ItemsGridViewState extends State<_ItemsGridView>
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: .75,
-                    mainAxisSpacing: 25,
+                    mainAxisSpacing: 12,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, i) => ItemGridItem(i, widget.bloc.items[i]),

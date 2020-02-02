@@ -7,7 +7,7 @@ import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/widgets/form_navigation_icon_button.dart';
-import 'package:mega_dot_pk/widgets/light_cta_button.dart';
+import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -132,7 +132,7 @@ class _SignInPageState extends State<SignInPage> {
                     duration: Constants.animationDuration,
                     opacity: bloc.taskStatus.error ? 1 : 0,
                     child: AbsorbPointer(
-                      child: LightCTAButton(
+                      child: SecondaryButton(
                         onTap: () {},
                         text: bloc.taskStatus.errorMessage,
                         color: Theme.of(context).errorColor,
@@ -235,7 +235,7 @@ class _SignInPageState extends State<SignInPage> {
                   padding: EdgeInsets.only(
                     top: sizeConfig.height(.01),
                   ),
-                  child: LightCTAButton(
+                  child: SecondaryButton(
                     onTap: bloc.taskStatus.loading ||
                             bloc.autoRetrievalTimedOut == false
                         ? null
@@ -253,7 +253,7 @@ class _SignInPageState extends State<SignInPage> {
                     duration: Constants.animationDuration,
                     opacity: bloc.taskStatus.error ? 1 : 0,
                     child: AbsorbPointer(
-                      child: LightCTAButton(
+                      child: SecondaryButton(
                         onTap: () {},
                         multiline: true,
                         text: bloc.taskStatus.errorMessage,

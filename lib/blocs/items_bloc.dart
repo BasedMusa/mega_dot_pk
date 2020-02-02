@@ -3,6 +3,7 @@ import 'package:mega_dot_pk/utils/api_interface.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 
 class ItemsBLOC extends ChangeNotifier {
+  String _uid;
   Category _category;
   Brand _brand;
   bool _hasMore;
@@ -11,6 +12,8 @@ class ItemsBLOC extends ChangeNotifier {
   AsyncTaskStatus _taskStatus;
 
   List<Item> get items => _items;
+
+  bool get hasItems => _items != null && _items.isNotEmpty;
 
   Brand get brand => _brand;
 
@@ -45,8 +48,9 @@ class ItemsBLOC extends ChangeNotifier {
     notifyListeners();
   }
 
-  ItemsBLOC(Category category) {
+  ItemsBLOC(Category category, String uid) {
     this._category = category;
+    this._uid = uid;
     loadData();
   }
 
@@ -64,7 +68,13 @@ class ItemsBLOC extends ChangeNotifier {
       if (!lazyLoading) items = null;
 
       DataFunctionResponse<List<Item>> response = await APIInterface.items(
-          _category, brandFilter, sortingFilter, _items?.length ?? 0, _items);
+        _uid,
+        _category,
+        _items?.length ?? 0,
+        _items,
+        sorting: sortingFilter,
+        brand: brandFilter,
+      );
 
       hasMore = response.hasMore;
       taskStatus = AsyncTaskStatus.fromDataFunctionResponse(response);
@@ -73,6 +83,26 @@ class ItemsBLOC extends ChangeNotifier {
     } catch (e) {
       print("ItemsBLOC: LoadData: UnexpectedError: $e");
       taskStatus = AsyncTaskStatus.error();
+    }
+  }
+
+  Future<void> toggleItemWished(Item item) async {
+    int index = _items.indexOf(item);
+
+    bool _originalState = item.wished;
+
+    _items[index].wished = !_items[index].wished;
+
+    notifyListeners();
+
+    DataFunctionResponse<bool> response =
+        await APIInterface.toggleWished(_uid, item.id, item.wished);
+
+    bool success = response.success && response.data == true;
+
+    if (success == false) {
+      _items[index].wished = _originalState;
+      notifyListeners();
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/blocs/item_details_bloc.dart';
+import 'package:mega_dot_pk/blocs/items_bloc.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/pages/all_specs_page.dart';
 import 'package:mega_dot_pk/pages/cart_page.dart';
@@ -14,7 +15,11 @@ import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/branded_image.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
-import 'package:mega_dot_pk/widgets/light_cta_button.dart';
+import 'package:mega_dot_pk/widgets/branded_table.dart';
+import 'package:mega_dot_pk/widgets/cart_button.dart';
+import 'package:mega_dot_pk/widgets/native_alert_dialog.dart';
+import 'package:mega_dot_pk/widgets/native_icons.dart';
+import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,8 +35,6 @@ class ItemDetailPage extends StatefulWidget {
 }
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
-  bool _bookmarked = false;
-
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: _appBar(),
@@ -43,23 +46,32 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   _appBar() => AppBar(
         elevation: 0.4,
         actions: <Widget>[
+          CartButton(),
           Padding(
             padding: EdgeInsets.only(right: 6),
             child: IconButton(
               icon: Icon(
-                _bookmarked ? Icons.favorite : Icons.favorite_border,
-                color: _bookmarked
-                    ? Theme.of(context).primaryColor
+                widget.item.wished
+                    ? NativeIcons.wishSolid()
+                    : NativeIcons.wish(),
+                color: widget.item.wished
+                    ? Constants.wishIconColor
                     : Theme.of(context).primaryIconTheme.color,
               ),
-              onPressed: Provider.of<AuthenticationProviderBLOC>(context).isAuthorized
-                  ? () => setState(() => _bookmarked = !_bookmarked)
-                  : () => Navigator.push(
-                        context,
-                        SlideUpPageRoute(
-                          child: AccountPage(),
-                        ),
-                      ),
+              onPressed: () {
+                AuthenticationProviderBLOC bloc =
+                    Provider.of<AuthenticationProviderBLOC>(context);
+                if (bloc.isAuthorized)
+                  Navigator.push(
+                    context,
+                    SlideUpPageRoute(
+                      child: AccountPage(),
+                    ),
+                  );
+                else
+                  Provider.of<ItemsBLOC>(context)
+                      .toggleItemWished(widget.item);
+              },
             ),
           ),
         ],
@@ -90,7 +102,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: _ShopButton(widget.item),
                 ),
               ),
-              LightCTAButton(
+              SecondaryButton(
                 icon: Icons.call,
                 color: Colors.green,
                 onTap: () async => await canLaunch(
@@ -288,15 +300,38 @@ class __ShopButtonState extends State<_ShopButton> {
       );
 
   Future<void> _onTap() async {
-    Provider.of<CartBLOC>(context, listen: false).addItem(widget.item);
-    await Navigator.push(
+    bool confirmedByUser = await NativeAlertDialog.show(
       context,
-      SlideUpPageRoute(
-        child: CartPage(
-          showAddedToCartBanner: true,
+      title: "Buy Now",
+      content: "Are you sure you want to buy this product?",
+      actions: [
+        NativeAlertDialogAction(
+          text: "Cancel",
+          onTap: () {
+            Navigator.pop(context, false);
+          },
         ),
-      ),
+        NativeAlertDialogAction(
+          text: "Yes",
+          isDefault: true,
+          onTap: () {
+            Navigator.pop(context, true);
+          },
+        ),
+      ],
     );
+
+    if (confirmedByUser) {
+      Provider.of<CartBLOC>(context, listen: false).addItem(widget.item);
+      await Navigator.push(
+        context,
+        SlideUpPageRoute(
+          child: CartPage(
+            showAddedToCartBanner: true,
+          ),
+        ),
+      );
+    }
   }
 }
 
@@ -320,7 +355,7 @@ class __DetailsSheetState extends State<_DetailsSheet> {
           Divider(),
 
           ///Specs Section
-          _specsSection(),
+          widget.itemDetails.isNotEmpty ? _specsSection() : Container(),
 
           ///Divider
 //          Divider(),
@@ -328,108 +363,100 @@ class __DetailsSheetState extends State<_DetailsSheet> {
       );
 
   Widget _specsSection() {
-    Map generalSpecs = widget.itemDetails["General"];
+    bool hasGeneralSpecs = widget.itemDetails.containsKey("General") &&
+        widget.itemDetails["General"] is! List;
 
-    Widget specsBar = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          "Specs",
-          style: Theme.of(context).textTheme.title,
-        ),
-        defaultTargetPlatform == TargetPlatform.iOS
-            ? CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Row(
-                  children: <Widget>[
-                    Text("See All"),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: sizeConfig.width(.01),
-                      ),
-                      child: Icon(Icons.navigate_next),
-                    ),
-                  ],
-                ),
-                onPressed: _seeAllSpecs,
-              )
-            : IconButton(
-                icon: Icon(Icons.arrow_forward),
-                onPressed: _seeAllSpecs,
-              ),
-      ],
-    );
+    bool hasDetailedSpecs = widget.itemDetails.length > 1;
 
-    Widget specsTable = Container(
-      margin: EdgeInsets.symmetric(
-        vertical: sizeConfig.height(.0125),
-      ),
-      padding: EdgeInsets.only(
-        bottom: sizeConfig.height(.015),
-      ),
-      child: Table(
-        children: List.generate(
-          generalSpecs.keys.length,
-          (i) => TableRow(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).dividerColor.withOpacity(.75),
-                  width: .5,
+    Widget _viewAllSpecsButton = defaultTargetPlatform == TargetPlatform.iOS
+        ? CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Row(
+              children: <Widget>[
+                Text(hasGeneralSpecs ? "See All" : "View"),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: sizeConfig.width(.01),
+                  ),
+                  child: Icon(Icons.navigate_next),
                 ),
-              ),
+              ],
             ),
-            children: [
-              TableCell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: sizeConfig.width(.0275),
-                  ),
-                  child: Text(
-                    generalSpecs.keys.toList()[i],
-                    style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: Theme.of(context).textTheme.body1.fontSize,
-                        ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: sizeConfig.width(.0275),
-                  ),
-                  child: Text(
-                    generalSpecs.values.toList()[i].toString() ?? "?",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: generalSpecs.values.toList()[i] != null
-                          ? null
-                          : Theme.of(context).textTheme.caption.color,
-                    ),
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ),
+            onPressed: _seeAllSpecs,
+          )
+        : IconButton(
+            icon: Icon(Icons.arrow_forward),
+            onPressed: _seeAllSpecs,
+          );
+
+    if (hasGeneralSpecs) {
+      Map generalSpecs = widget.itemDetails["General"];
+
+      Widget specsBar = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            "Specs",
+            style: Theme.of(context).textTheme.title,
+          ),
+          hasDetailedSpecs ? _viewAllSpecsButton : Container(),
+        ],
+      );
+
+      Widget specsTable = Container(
+        margin: EdgeInsets.symmetric(
+          vertical: sizeConfig.height(.0125),
+        ),
+        padding: EdgeInsets.only(
+          bottom: sizeConfig.height(.015),
+        ),
+        child: BrandedTable(generalSpecs),
+      );
+
+      return Container(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: sizeConfig.width(.05),
+            vertical: sizeConfig.height(.01),
+          ),
+          child: Column(
+            children: <Widget>[
+              specsBar,
+              specsTable,
             ],
           ),
         ),
-      ),
-    );
-
-    return Container(
-      child: Padding(
+      );
+    } else
+      return Container(
         padding: EdgeInsets.symmetric(
+          vertical: sizeConfig.height(.025),
           horizontal: sizeConfig.width(.05),
-          vertical: sizeConfig.height(.01),
         ),
-        child: Column(
+        child: Row(
           children: <Widget>[
-            specsBar,
-            specsTable,
+            Expanded(
+              child: Container(
+                alignment:
+                    hasDetailedSpecs ? Alignment.centerLeft : Alignment.center,
+                child: Text(
+                  hasDetailedSpecs
+                      ? "Detailed Specifications"
+                      : "Specs Not Available",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    letterSpacing: -1,
+                    fontWeight: FontWeight.w600,
+                    fontSize: sizeConfig.text(20),
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
+              ),
+            ),
+            hasDetailedSpecs ? _viewAllSpecsButton : Container(),
           ],
         ),
-      ),
-    );
+      );
   }
 
   void _seeAllSpecs() => Navigator.push(

@@ -19,11 +19,11 @@ class NativeIcons {
       ? CupertinoIcons.collections_solid
       : Icons.shopping_basket;
 
-  static IconData favorite() => defaultTargetPlatform == TargetPlatform.iOS
+  static IconData wish() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.heart
       : Icons.favorite_border;
 
-  static IconData favoriteSolid() => defaultTargetPlatform == TargetPlatform.iOS
+  static IconData wishSolid() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.heart_solid
       : Icons.favorite;
 
@@ -35,9 +35,8 @@ class NativeIcons {
       ? CupertinoIcons.person_solid
       : Icons.person;
 
-  static IconData callSolid() => defaultTargetPlatform == TargetPlatform.iOS
-      ? Icons.call
-      : Icons.call;
+  static IconData callSolid() =>
+      defaultTargetPlatform == TargetPlatform.iOS ? Icons.call : Icons.call;
 
   static IconData refresh() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.refresh
@@ -46,4 +45,12 @@ class NativeIcons {
   static IconData back() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.back
       : Icons.arrow_back;
+
+  static IconData shoppingCart() => defaultTargetPlatform == TargetPlatform.iOS
+      ? CupertinoIcons.shopping_cart
+      : Icons.shopping_cart;
+
+  static IconData remove() => defaultTargetPlatform == TargetPlatform.iOS
+      ? CupertinoIcons.delete_solid
+      : Icons.delete_forever;
 }

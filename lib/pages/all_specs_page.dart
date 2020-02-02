@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
+import 'package:mega_dot_pk/widgets/branded_table.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
 
 import '../utils/globals.dart';
@@ -106,7 +107,8 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
                   onChanged: (String query) =>
                       setState(() => _searchQuery = query),
                   decoration: InputDecoration(
-                    hintText: "Search through specs...",
+                    labelText: "Search through specs...",
+                    hintText: "Processor...",
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: sizeConfig.width(.04),
                     ),
@@ -135,7 +137,7 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
           : EdgeInsets.only(
               top: sizeConfig.height(.0175),
             ),
-      child: _SpecsTable(specs, _searchQuery),
+      child: BrandedTable(specs, searchQuery: _searchQuery),
     );
 
     return Container(
@@ -145,98 +147,4 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
       child: specsTable,
     );
   }
-}
-
-class _SpecsTable extends StatefulWidget {
-  final Map specs;
-  final String searchQuery;
-
-  _SpecsTable(this.specs, this.searchQuery);
-
-  @override
-  __SpecsTableState createState() => __SpecsTableState();
-}
-
-class __SpecsTableState extends State<_SpecsTable> {
-  @override
-  Widget build(BuildContext context) => Table(
-        children: _generateRows(widget.specs),
-      );
-
-  List<TableRow> _generateRows(Map<String, dynamic> specs, {int padding = 0}) {
-    List<TableRow> _rows = [];
-
-    specs.forEach((String key, dynamic value) {
-      if (value is Map) {
-        List<TableRow> _subRows = _generateRows(value, padding: padding + 1);
-
-        if (_subRows.isNotEmpty) {
-          _rows.addAll(_subRows);
-          _rows.add(_tableRow(key, value, padding));
-        }
-      } else if (key.toLowerCase().contains(widget.searchQuery.toLowerCase()))
-        _rows.add(_tableRow(key, value, padding));
-    });
-
-    return _rows;
-  }
-
-  TableRow _tableRow(String key, dynamic value, int padding) => TableRow(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Theme.of(context).dividerColor.withOpacity(.75),
-              width: .5,
-            ),
-          ),
-        ),
-        children: [
-          TableCell(
-            child: Container(
-              margin: EdgeInsets.only(left: 20.0 * padding),
-              padding: EdgeInsets.symmetric(
-                vertical: sizeConfig.width(.0275),
-              ),
-              child: Text(
-                key,
-                style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: Theme.of(context).textTheme.body1.fontSize,
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-            ),
-          ),
-          TableCell(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: sizeConfig.width(.0275),
-              ),
-              child: value is bool
-                  ? Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(
-                        value == true ? Icons.check : Icons.clear,
-                        color: value == true ? Colors.green : null,
-                        size: 18,
-                      ),
-                    )
-                  : value is Map
-                      ? Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(""),
-                        )
-                      : Text(
-                          value != null ? value.toString() : "?",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: value != null
-                                ? null
-                                : Theme.of(context).textTheme.caption.color,
-                          ),
-                          textAlign: TextAlign.end,
-                        ),
-            ),
-          ),
-        ],
-      );
 }

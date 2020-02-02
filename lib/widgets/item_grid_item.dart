@@ -2,10 +2,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/blocs/item_details_bloc.dart';
+import 'package:mega_dot_pk/blocs/items_bloc.dart';
 import 'package:mega_dot_pk/pages/item_detail_page.dart';
+import 'package:mega_dot_pk/utils/constants.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/branded_image.dart';
+import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:provider/provider.dart';
 
 class ItemGridItem extends StatefulWidget {
@@ -20,8 +23,6 @@ class ItemGridItem extends StatefulWidget {
 
 class _ItemGridItemState extends State<ItemGridItem> {
   GlobalKey _key = GlobalKey();
-
-  bool _bookmarked = false;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
@@ -54,18 +55,19 @@ class _ItemGridItemState extends State<ItemGridItem> {
                           ),
                           child: IconButton(
                             icon: Icon(
-                              _bookmarked
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
+                              widget.item.wished
+                                  ? NativeIcons.wishSolid()
+                                  : NativeIcons.wish(),
                               color: auth.isAuthorized
-                                  ? _bookmarked
-                                      ? Theme.of(context).primaryColor
+                                  ? widget.item.wished
+                                      ? Constants.wishIconColor
                                       : Theme.of(context).primaryIconTheme.color
                                   : Colors.black.withOpacity(0),
                             ),
                             onPressed: auth.isAuthorized
-                                ? () =>
-                                    setState(() => _bookmarked = !_bookmarked)
+                                ? () => Provider.of<ItemsBLOC>(context,
+                                        listen: false)
+                                    .toggleItemWished(widget.item)
                                 : null,
                           ),
                         ),

@@ -7,11 +7,9 @@ import 'package:mega_dot_pk/pages/home_page.dart';
 import 'package:mega_dot_pk/pages/sign_in_page.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
 import 'package:mega_dot_pk/utils/models.dart';
-import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
-import 'package:mega_dot_pk/widgets/form_navigation_icon_button.dart';
-import 'package:mega_dot_pk/widgets/light_cta_button.dart';
+import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
 
@@ -213,7 +211,7 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
                       duration: Constants.animationDuration,
                       opacity: bloc.taskStatus.error ? 1 : 0,
                       child: AbsorbPointer(
-                        child: LightCTAButton(
+                        child: SecondaryButton(
                           onTap: () {},
                           text: bloc.taskStatus.errorMessage,
                           color: Theme.of(context).errorColor,
@@ -230,13 +228,14 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
         ),
       );
 
-  _setDisplayName(AuthenticationProviderBLOC bloc) {
+  Future<void> _setDisplayName(AuthenticationProviderBLOC bloc) async {
     try {
       bloc.taskStatus = AsyncTaskStatus.loading();
       if (_namePageFormKey.currentState.validate()) {
         UserUpdateInfo info = UserUpdateInfo()
           ..displayName = _nameController.text;
         bloc.user.updateProfile(info);
+        await bloc.autoLogin();
         Navigator.pop(context);
       }
     } catch (e) {

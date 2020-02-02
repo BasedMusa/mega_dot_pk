@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
+import 'package:mega_dot_pk/widgets/cart_button.dart';
 import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
 import 'package:mega_dot_pk/pages/account_page.dart';
 import 'package:mega_dot_pk/widgets/branded_error_page.dart';
 import 'package:mega_dot_pk/widgets/category_list_item.dart';
-import 'package:mega_dot_pk/widgets/light_cta_button.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
+import 'package:mega_dot_pk/widgets/native_alert_dialog.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
+import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
@@ -70,14 +72,14 @@ class _HomePageState extends State<HomePage> {
                   style: Theme.of(context).textTheme.title,
                 ),
               ),
-              LightCTAButton(
+              SecondaryButton(
                 text: "Shop Now",
                 icon: Icons.arrow_forward_ios,
                 onTap: () => _onPageChanged(1),
               ),
               Provider.of<AuthenticationProviderBLOC>(context).isAuthorized ==
                       false
-                  ? LightCTAButton(
+                  ? SecondaryButton(
                       text: "Get More Features By Signing Up!",
                       icon: Icons.person_add,
                       onTap: () => Navigator.push(
@@ -92,7 +94,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: LightCTAButton(
+                    child: SecondaryButton(
                       text: "Call",
                       icon: NativeIcons.callSolid(),
                       onTap: () => _launchURL(Constants.landlinePhoneNumber),
@@ -105,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Expanded(
-                    child: LightCTAButton(
+                    child: SecondaryButton(
                       text: "Our Facebook",
                       icon: Icons.whatshot,
                       onTap: () =>
@@ -136,7 +138,14 @@ class _HomePageState extends State<HomePage> {
                             centerTitle: true,
                             primary: true,
                             pinned: true,
-                            expandedHeight: sizeConfig.height(.35),
+                            expandedHeight: sizeConfig.height(.3),
+                            actions: <Widget>[
+                              CartButton(),
+                              IconButton(
+                                icon: Icon(NativeIcons.search()),
+                                onPressed: () => _onPageChanged(0),
+                              )
+                            ],
                             flexibleSpace: Container(
                               padding: EdgeInsets.only(
                                 top: sizeConfig.height(.035),
@@ -165,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                           itemCount: bloc.categories.length,
                           itemBuilder: (context, i) => CategoryListItem(
                             bloc.categories[i],
-                            searchButtonCallback: () => _onPageChanged(1),
+                            searchButtonCallback: () => _onPageChanged(0),
                           ),
                         ),
                       ),
@@ -191,8 +200,29 @@ class _HomePageState extends State<HomePage> {
                 bloc.isAuthorized
                     ? CTAButton(
                         text: "Sign Out",
-                        onTap: () {
-                          bloc.signOut();
+                        onTap: () async {
+                          bool confirmedByUser = await NativeAlertDialog.show(
+                            context,
+                            title: "Are you sure?",
+                            content:
+                                "You will have log back in to your account, to view your profile and order items.",
+                            actions: [
+                              NativeAlertDialogAction(
+                                text: "Cancel",
+                                onTap: () {
+                                  Navigator.pop(context, false);
+                                },
+                              ),
+                              NativeAlertDialogAction(
+                                text: "Sign Out",
+                                isDestructive: true,
+                                onTap: () {
+                                  Navigator.pop(context, true);
+                                },
+                              ),
+                            ],
+                          );
+                          if (confirmedByUser) bloc.signOut();
                         },
                       )
                     : Container(),

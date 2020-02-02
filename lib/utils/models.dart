@@ -6,15 +6,18 @@ class Item {
   String views;
   String warranty;
   String categoryID;
+  String categoryName;
   String brandID;
   String brandName;
   String thumbnailImageURL;
   String xsThumbnailImageURL;
+  bool wished;
 
   Item.fromJSON(Map json)
       : this.id = json["id"],
         this.price = json["price"],
         this.categoryID = json["category_id"],
+        this.categoryName = json["category_name"],
         this.brandID = json["brand_id"],
         this.stock =
             (json["stock"] as String).isNotEmpty ? json["stock"] : "Available",
@@ -26,18 +29,18 @@ class Item {
         this.name = (json["name"] as String)
             .replaceAll(json["name"].split(" ")[0] + " ", ""),
         this.xsThumbnailImageURL = json["tss_img_url"],
-        this.thumbnailImageURL = json["t_img_url"];
+        this.thumbnailImageURL = json["t_img_url"],
+        this.wished = json["wished"] ?? false;
+
 }
 
 class Category {
   String id;
-  String pid;
   String name;
   String description;
 
   Category.fromJSON(Map json)
       : this.id = json["id"],
-        this.pid = json["pid"],
         this.name = json["name"],
         this.description = "Gadgets for your home.";
 }

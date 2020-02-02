@@ -28,14 +28,18 @@ class APIInterface {
   }
 
   static Future<DataFunctionResponse<List<Item>>> items(
+    String uid,
     Category category,
+    int offset,
+    List<Item> alreadyLoadedItems, {
     Brand brand,
     Sorting sorting,
-    int offset,
-    List<Item> alreadyLoadedItems,
-  ) async {
+  }) async {
     try {
-      String url = "$baseURL/items/read.php?cid=${category.id}&offset=$offset";
+      assert(uid != null);
+
+      String url =
+          "$baseURL/items/read.php?uid=$uid&cid=${category.id}&offset=$offset";
 
       if (brand != null) url += "&bid=${brand.id}";
 
@@ -44,6 +48,7 @@ class APIInterface {
       Map json = await _sendRequest(url);
 
       if (json != null) {
+
         List<dynamic> itemsJSONList = json["records"];
         List<Item> items = alreadyLoadedItems ?? [];
 
@@ -102,6 +107,25 @@ class APIInterface {
     }
   }
 
+  static Future<DataFunctionResponse<bool>> toggleWished(
+      String userID, String itemID, bool wished) async {
+    try {
+      int wishState = wished ? 1 : 0;
+      Map json = await _sendRequest(
+          "$baseURL/wishlist/toggle.php?uid=$userID&item_id=$itemID&state=$wishState");
+
+      if (json != null) {
+        bool success = json["success"];
+
+        return DataFunctionResponse.success(success);
+      } else
+        return DataFunctionResponse.error();
+    } catch (e) {
+      print("APIInterface: ToggleWished: UnexpectedError: $e");
+      return DataFunctionResponse.error();
+    }
+  }
+
   static Future<Map> _sendRequest(String url) async {
     try {
       HTTP.Response response = await HTTP.get(url);
@@ -109,7 +133,7 @@ class APIInterface {
 
       return json;
     } on SocketException catch (e) {
-      print("APIInterface: SendRequest: SocketException: $e");
+      print("APIInterface: SendRequest: $e");
       return null;
     } on PlatformException catch (e) {
       if (e.code == "ERROR_NETWORK_REQUEST_FAILED") {
