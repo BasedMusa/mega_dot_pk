@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/blocs/categories_bloc.dart';
+import 'package:mega_dot_pk/blocs/product_blocs.dart';
 import 'package:mega_dot_pk/pages/splash_screen_page.dart';
 import 'package:mega_dot_pk/utils/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,10 @@ class _MegaDotPKAppState extends State<MegaDotPKApp> {
               create: (_) => CategoriesBLOC()),
           ChangeNotifierProvider<AuthenticationProviderBLOC>(
               create: (_) => AuthenticationProviderBLOC()),
+          ChangeNotifierProvider<CategorySpecificProductsBLOC>(
+              create: (_) => CategorySpecificProductsBLOC()),
+          ChangeNotifierProvider<BrandSpecificProductsBLOC>(
+              create: (_) => BrandSpecificProductsBLOC()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

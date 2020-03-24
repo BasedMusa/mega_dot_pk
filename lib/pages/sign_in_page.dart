@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
-import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/widgets/branded_loading_indicator.dart';
+import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/widgets/form_navigation_icon_button.dart';
-import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
+import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget {
@@ -30,6 +30,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: _body(),
+        backgroundColor: Theme.of(context).cardColor,
       );
 
   @override
@@ -44,6 +45,7 @@ class _SignInPageState extends State<SignInPage> {
         value: SystemUiOverlayStyle.dark,
         child: PageView(
           controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             _enterPhoneNumberPage(),
             _enterCodePage(),
@@ -59,7 +61,6 @@ class _SignInPageState extends State<SignInPage> {
           bottom: sizeConfig.height(.05) + sizeConfig.safeArea.bottom,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Consumer<AuthenticationProviderBLOC>(
@@ -82,7 +83,15 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       child: Text(
                         "Sign In",
-                        style: Theme.of(context).textTheme.title,
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .headline6
+                            .copyWith(
+                              color: Theme.of(context)
+                                  .primaryTextTheme
+                                  .bodyText1
+                                  .color,
+                            ),
                       ),
                     ),
                     Spacer(),
@@ -102,6 +111,11 @@ class _SignInPageState extends State<SignInPage> {
                         : null,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      fillColor: Theme.of(context).scaffoldBackgroundColor,
                       labelText: "Enter Phone Number",
                       prefixIcon: Icon(Icons.call),
                       prefixText: "+92 ",
@@ -156,7 +170,6 @@ class _SignInPageState extends State<SignInPage> {
           bottom: sizeConfig.height(.05) + sizeConfig.safeArea.bottom,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Consumer<AuthenticationProviderBLOC>(
@@ -181,7 +194,7 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       child: Text(
                         "Verification",
-                        style: Theme.of(context).textTheme.title,
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
                     Spacer(),
@@ -192,11 +205,11 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: sizeConfig.height(.04),
+                    top: sizeConfig.height(.03),
                   ),
                   child: Text(
                     "We sent a 6 digit PIN code to your provided phone number. When you receive it, enter it here.",
-                    style: Theme.of(context).textTheme.subtitle,
+                    style: Theme.of(context).primaryTextTheme.subtitle2,
                   ),
                 ),
                 Padding(
@@ -210,6 +223,10 @@ class _SignInPageState extends State<SignInPage> {
                         : null,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                       labelText: "Enter PIN Code",
                       prefixIcon: Icon(Icons.fiber_pin),
                       hintText: "XXXXXX",

@@ -32,7 +32,6 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: _appBar(),
         body: _body(),
-        backgroundColor: Theme.of(context).canvasColor,
       );
 
   @override
@@ -83,53 +82,62 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
         ],
       );
 
-  _body() => Container(
-        child: SingleChildScrollView(
-          controller: _pageScrollController,
-          padding: EdgeInsets.only(
-            bottom: sizeConfig.height(.045) + sizeConfig.safeArea.bottom,
-          ),
-          child: Column(
-            children: <Widget>[
-              ///Search Field
-              AnimatedContainer(
-                duration: Duration(milliseconds: 100),
-                height: _searchMode ? sizeConfig.height(.055) : 0,
-                margin: EdgeInsets.only(
-                  top: sizeConfig.height(.025),
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: sizeConfig.width(.05),
-                ),
-                child: TextField(
-                  focusNode: _searchFieldFocusNode,
-                  controller: _searchFieldController,
-                  onChanged: (String query) =>
-                      setState(() => _searchQuery = query),
-                  decoration: InputDecoration(
-                    labelText: "Search through specs...",
-                    hintText: "Processor...",
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: sizeConfig.width(.04),
+  _body() => CupertinoScrollbar(
+        child: Container(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            controller: _pageScrollController,
+            padding: EdgeInsets.only(
+              bottom: sizeConfig.height(.045) + sizeConfig.safeArea.bottom,
+            ),
+            child: Column(
+              children: <Widget>[
+                ///Search Field
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 100),
+                  color: Theme.of(context).inputDecorationTheme.fillColor,
+                  height: _searchMode ? sizeConfig.height(.095) : 0,
+                  margin: EdgeInsets.only(
+                    top: sizeConfig.height(.025),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: sizeConfig.height(.02),
+                  ),
+                  child: TextField(
+                    focusNode: _searchFieldFocusNode,
+                    controller: _searchFieldController,
+                    onChanged: (String query) =>
+                        setState(() => _searchQuery = query),
+                    decoration: InputDecoration(
+                      labelText: "Search through specs...",
+                      hintText: "Processor...",
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: sizeConfig.width(.04),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              ///Specs
-              Column(
-                children: List<Widget>.generate(
-                  widget.specs.keys.length,
-                  (i) => _generateTable(widget.specs.values.toList()[i], i),
+                ///Specs
+                Column(
+                  children: List<Widget>.generate(
+                    widget.specs.keys.length,
+                    (i) => _generateTable(widget.specs.values.toList()[i], i),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
 
   _generateTable(Map specs, int index) {
     Widget specsTable = Container(
+      color: Theme.of(context).cardColor,
+      width: double.maxFinite,
+      padding: EdgeInsets.symmetric(
+        horizontal: sizeConfig.width(.05),
+      ),
       margin: index != 0
           ? EdgeInsets.only(
               top: sizeConfig.height(.035),
@@ -141,9 +149,6 @@ class _AllSpecsPageState extends State<AllSpecsPage> {
     );
 
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: sizeConfig.width(.05),
-      ),
       child: specsTable,
     );
   }

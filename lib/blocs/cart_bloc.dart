@@ -5,11 +5,11 @@ import 'package:mega_dot_pk/widgets/native_alert_dialog.dart';
 class CartBLOC extends ChangeNotifier {
   bool get hasItems => _items != null && _items.isNotEmpty;
 
-  Map<String, List<Item>> _items = {};
+  Map<String, List<Product>> _items = {};
 
-  Map<String, List<Item>> get items => _items;
+  Map<String, List<Product>> get items => _items;
 
-  void addItem(Item item) {
+  void addItem(Product item) {
     if (_items.containsKey(item.id))
       _items[item.id].add(item);
     else

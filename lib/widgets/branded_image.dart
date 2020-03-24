@@ -9,8 +9,13 @@ class BrandedImage extends StatelessWidget {
   final BoxFit fit;
   final double height;
   final double width;
+  final bool backgroundIsCard;
 
-  BrandedImage(this.url, {this.fit = BoxFit.cover, this.height, this.width});
+  BrandedImage(this.url,
+      {this.fit = BoxFit.cover,
+      this.height,
+      this.width,
+      this.backgroundIsCard = false});
 
   @override
   Widget build(BuildContext context) => TransitionToImage(
@@ -20,8 +25,13 @@ class BrandedImage extends StatelessWidget {
         alignment: Alignment.center,
         enableRefresh: true,
         image: AdvancedNetworkImage(url, useDiskCache: true),
-        loadingWidget: _center(child: BrandedLoadingIndicator()),
-        placeholder: _center(child: BrandedErrorLogo(showRefreshIcon: true)),
+        loadingWidget: _center(child: BrandedLoadingIndicator()), printError: false,
+        placeholder: _center(
+          child: BrandedErrorLogo(
+            showRefreshIcon: true,
+            backgroundIsCard: backgroundIsCard,
+          ),
+        ),
       );
 
   _center({@required Widget child}) => Container(

@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,9 +5,10 @@ import 'package:mega_dot_pk/blocs/authentication_provider_bloc.dart';
 import 'package:mega_dot_pk/pages/home_page.dart';
 import 'package:mega_dot_pk/pages/sign_in_page.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
+import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
 import 'package:mega_dot_pk/widgets/cta_button.dart';
-import 'package:mega_dot_pk/utils/globals.dart';
+import 'package:mega_dot_pk/widgets/form_navigation_icon_button.dart';
 import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:mega_dot_pk/widgets/slide_up_page_route.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +26,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: _body(),
+        backgroundColor: Theme.of(context).cardColor,
       );
 
   _body() => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -43,7 +44,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: _navigationIconButton(onTap: _goToHomePage),
+                child: FormNavigationIconButton(onTap: _goToHomePage),
               ),
               Spacer(),
               _signInButton(),
@@ -62,25 +63,6 @@ class _AccountPageState extends State<AccountPage> {
         child: CTAButton(
           text: "Sign In",
           onTap: _signIn,
-        ),
-      );
-
-  _navigationIconButton({IconData icon, VoidCallback onTap}) => Material(
-        borderRadius: BorderRadius.circular(18),
-        color: Colors.white.withOpacity(.25),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(18)),
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Icon(
-                icon ?? Icons.clear,
-                color: Colors.white,
-              ),
-            ),
-          ),
         ),
       );
 
@@ -137,6 +119,7 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
         onWillPop: () async => false,
         child: Scaffold(
           body: _body(),
+          backgroundColor: Theme.of(context).cardColor,
         ),
       );
 
@@ -149,10 +132,6 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
             top: sizeConfig.height(.035) + sizeConfig.safeArea.top,
             bottom: sizeConfig.height(.05) + sizeConfig.safeArea.bottom,
           ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
-            borderRadius: BorderRadius.circular(30),
-          ),
           child: Consumer<AuthenticationProviderBLOC>(
             builder: (_, bloc, __) => Form(
               key: _namePageFormKey,
@@ -164,7 +143,7 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
                     padding: EdgeInsets.only(left: sizeConfig.width(.02)),
                     child: Text(
                       "What's your name?",
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).primaryTextTheme.headline6,
                     ),
                   ),
                   Padding(
@@ -181,6 +160,10 @@ class __SetDisplayNamePageState extends State<_SetDisplayNamePage> {
                                   ? "You need to enter your full name."
                                   : null,
                       decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                         labelText: "Enter your name",
                         prefixIcon: Icon(Icons.font_download),
                         prefixText: "I'm ",

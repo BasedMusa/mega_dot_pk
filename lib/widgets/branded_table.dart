@@ -55,7 +55,7 @@ class _BrandedTableState extends State<BrandedTable> {
               child: Text(
                 key,
                 style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: Theme.of(context).textTheme.body1.fontSize,
+                      fontSize: Theme.of(context).textTheme.bodyText2.fontSize,
                       fontWeight: FontWeight.w700,
                     ),
               ),

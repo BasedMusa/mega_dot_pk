@@ -8,21 +8,21 @@ import 'package:mega_dot_pk/widgets/branded_image.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:provider/provider.dart';
 
-class ItemCartListItem extends StatefulWidget {
-  final Item item;
+class ProductCartListItem extends StatefulWidget {
+  final Product item;
   final int itemCounter;
 
-  ItemCartListItem(this.item, this.itemCounter);
+  ProductCartListItem(this.item, this.itemCounter);
 
   @override
-  _ItemCartListItemState createState() => _ItemCartListItemState();
+  _ProductCartListItemState createState() => _ProductCartListItemState();
 }
 
-class _ItemCartListItemState extends State<ItemCartListItem> {
+class _ProductCartListItemState extends State<ProductCartListItem> {
   @override
   void initState() {
     assert(widget.itemCounter >= 1,
-        "This should be atleast 1, else there is probably an error in the logic.");
+        "This value should be at least 1, else there is probably an error in the logic.");
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
         ),
         child: Text(
           "Qty. ${widget.itemCounter}",
-          style: Theme.of(context).textTheme.subhead.copyWith(
+          style: Theme.of(context).textTheme.subtitle1.copyWith(
                 color: Theme.of(context).disabledColor,
                 fontWeight: FontWeight.w600,
               ),
@@ -78,7 +78,7 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
             ),
             child: Text(
               "Remove",
-              style: Theme.of(context).textTheme.subtitle.copyWith(
+              style: Theme.of(context).textTheme.subtitle2.copyWith(
                     color: Theme.of(context).errorColor,
                     fontWeight: FontWeight.w600,
                   ),
@@ -110,7 +110,7 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
         height: sizeConfig.height(.18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).cardColor,
         ),
         padding: EdgeInsets.symmetric(
           horizontal: sizeConfig.width(.035),
@@ -122,7 +122,7 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
             Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(14),
               ),
               margin: EdgeInsets.symmetric(vertical: 10),
@@ -162,13 +162,13 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
                       widget.item.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     Text(
                       widget.item.brandName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.subtitle.copyWith(
+                      style: Theme.of(context).textTheme.subtitle2.copyWith(
                             fontSize: sizeConfig.text(17),
                           ),
                     ),
@@ -179,8 +179,8 @@ class _ItemCartListItemState extends State<ItemCartListItem> {
                       style: Theme.of(context).textTheme.caption,
                     ),
                     Text(
-                      "${widget.item.price} PKR",
-                      style: Theme.of(context).textTheme.title.copyWith(
+                      widget.item.priceText,
+                      style: Theme.of(context).textTheme.headline6.copyWith(
                             color: Colors.green,
                           ),
                     ),

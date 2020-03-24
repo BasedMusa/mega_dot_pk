@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mega_dot_pk/blocs/cart_bloc.dart';
 import 'package:mega_dot_pk/utils/constants.dart';
+import 'package:mega_dot_pk/utils/globals.dart';
 import 'package:mega_dot_pk/utils/models.dart';
+import 'package:mega_dot_pk/widgets/cta_button.dart';
 import 'package:mega_dot_pk/widgets/form_navigation_icon_button.dart';
 import 'package:mega_dot_pk/widgets/item_cart_list_item.dart';
 import 'package:mega_dot_pk/widgets/native_icons.dart';
 import 'package:mega_dot_pk/widgets/secondary_button.dart';
 import 'package:provider/provider.dart';
-import 'package:mega_dot_pk/utils/globals.dart';
 
 class CartPage extends StatefulWidget {
   final bool showAddedToCartBanner;
@@ -55,7 +57,6 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) => Scaffold(
         body: _body(),
         bottomNavigationBar: _bottomAppBar(),
-        backgroundColor: Theme.of(context).canvasColor,
       );
 
   _bottomAppBar() => Selector<CartBLOC, bool>(
@@ -93,7 +94,8 @@ class _CartPageState extends State<CartPage> {
                         ),
                         Text(
                           _calculateTotalAmount(),
-                          style: Theme.of(context).textTheme.title.copyWith(
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                                fontSize: 22,
                                 color: Colors.green,
                               ),
                         ),
@@ -109,61 +111,64 @@ class _CartPageState extends State<CartPage> {
               ),
       );
 
-  _body() => Container(
-        padding: EdgeInsets.only(
-          right: sizeConfig.width(.06),
-          left: sizeConfig.width(.06),
-          top: sizeConfig.height(.035) + sizeConfig.safeArea.top,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Consumer<CartBLOC>(
-          builder: (_, bloc, __) => Column(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              AnimatedContainer(
-                duration: Constants.animationDuration,
-                padding: EdgeInsets.only(bottom: sizeConfig.height(.015)),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: _showAppBarBorder
-                          ? Theme.of(context).dividerColor
-                          : Colors.white.withOpacity(0),
+  _body() => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Container(
+          padding: EdgeInsets.only(
+            right: sizeConfig.width(.06),
+            left: sizeConfig.width(.06),
+            top: sizeConfig.height(.035) + sizeConfig.safeArea.top,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Consumer<CartBLOC>(
+            builder: (_, bloc, __) => Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                AnimatedContainer(
+                  duration: Constants.animationDuration,
+                  padding: EdgeInsets.only(bottom: sizeConfig.height(.015)),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: _showAppBarBorder
+                            ? Theme.of(context).dividerColor
+                            : Colors.white.withOpacity(0),
+                      ),
                     ),
                   ),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    FormNavigationIconButton(
-                      onTap: () => Navigator.pop(context),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: sizeConfig.width(.05),
+                  child: Row(
+                    children: <Widget>[
+                      FormNavigationIconButton(
+                        onTap: () => Navigator.pop(context),
                       ),
-                      child: Text(
-                        "Your Cart",
-                        style: Theme.of(context).textTheme.title,
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: sizeConfig.width(.05),
+                        ),
+                        child: Text(
+                          "Your Cart",
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
                       ),
-                    ),
-                    Spacer(),
-                    bloc.hasItems &&
-                            (bloc.items.length > 1 ||
-                                bloc.items.values.first.length > 1)
-                        ? _clearCartButton()
-                        : Container(),
-                  ],
+                      Spacer(),
+                      bloc.hasItems &&
+                              (bloc.items.length > 1 ||
+                                  bloc.items.values.first.length > 1)
+                          ? _clearCartButton()
+                          : Container(),
+                    ],
+                  ),
                 ),
-              ),
 
-              ///Banner
-              _addedToCartBanner(),
+                ///Banner
+                _addedToCartBanner(),
 
-              ///Cart Items
-              _cartItems(),
-            ],
+                ///Cart Items
+                _cartItems(),
+              ],
+            ),
           ),
         ),
       );
@@ -190,9 +195,10 @@ class _CartPageState extends State<CartPage> {
                 controller: _scrollController,
                 padding: EdgeInsets.only(bottom: sizeConfig.height(.035)),
                 itemCount: bloc.items.keys.length,
-                itemBuilder: (context, int index) => ItemCartListItem(
-                    bloc.items.values.toList()[index].first,
-                    bloc.items.values.toList()[index].length),
+                itemBuilder: (context, int index) => ProductCartListItem(
+                  bloc.items.values.toList()[index].first,
+                  bloc.items.values.toList()[index].length,
+                ),
               ),
             ),
             secondChild: Center(
@@ -262,18 +268,18 @@ class _CartPageState extends State<CartPage> {
   String _calculateTotalAmount() {
     final currencyFormat = new NumberFormat("#,##0.00", "en_US");
 
-    Map<String, List<Item>> cartItems = Provider.of<CartBLOC>(context).items;
+    Map<String, List<Product>> cartItems = Provider.of<CartBLOC>(context).items;
 
     int totalAmount = 0;
 
-    cartItems.forEach((String key, List<Item> value) {
-      value.forEach((Item item) {
+    cartItems.forEach((String key, List<Product> value) {
+      value.forEach((Product item) {
         int price = int.parse(item.price.replaceAll(",", ""));
         totalAmount += price;
       });
     });
 
-    return "${currencyFormat.format(totalAmount)} PKR";
+    return "${currencyFormat.format(totalAmount).replaceAll(".00", "")} PKR";
   }
 
   _handleBanner() {
@@ -309,40 +315,9 @@ class _PlaceOrderButton extends StatefulWidget {
 
 class _PlaceOrderButtonState extends State<_PlaceOrderButton> {
   @override
-  Widget build(BuildContext context) => Material(
-        borderRadius: BorderRadius.circular(18),
-        color: Theme.of(context).primaryColor,
-        child: InkWell(
-          onTap: _onTap,
-          splashColor: Colors.white.withOpacity(.5),
-          borderRadius: BorderRadius.circular(18),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              vertical: sizeConfig.height(.0185),
-            ),
-            child: DefaultTextStyle(
-              style: Theme.of(context).textTheme.subtitle.copyWith(
-                    color: Theme.of(context).canvasColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: sizeConfig.width(.06),
-                ),
-                padding: EdgeInsets.symmetric(
-                  vertical: sizeConfig.height(.01),
-                  horizontal: sizeConfig.width(.05),
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFFFFA23F),
-                ),
-                child: Text("Place Order"),
-              ),
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) => CTAButton(
+        text: "Place Order",
+        onTap: _onTap,
       );
 
   Future<void> _onTap() async {}

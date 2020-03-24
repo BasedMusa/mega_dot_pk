@@ -59,7 +59,7 @@ class _BrandedErrorPageState extends State<BrandedErrorPage> {
                         onPressed: widget.onTap,
                         child: Text(
                           "Retry",
-                          style: Theme.of(context).textTheme.button,
+                          style: Theme.of(context).primaryTextTheme.button,
                         ),
                       ),
                     )
@@ -69,11 +69,11 @@ class _BrandedErrorPageState extends State<BrandedErrorPage> {
                       elevation: 0,
                       label: Text(
                         "Retry",
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).primaryTextTheme.button,
                       ),
                       icon: Icon(
                         NativeIcons.refresh(),
-                        color: Theme.of(context).textTheme.button.color,
+                        color: Theme.of(context).primaryTextTheme.button.color,
                       ),
                     ),
             ),

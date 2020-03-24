@@ -1,59 +1,65 @@
-class Item {
+class Product {
   String id;
   String name;
+  String priceText;
   String price;
   String stock;
   String views;
   String warranty;
   String categoryID;
-  String categoryName;
   String brandID;
   String brandName;
   String thumbnailImageURL;
   String xsThumbnailImageURL;
   bool wished;
 
-  Item.fromJSON(Map json)
+  Product.fromJSON(Map json)
       : this.id = json["id"],
-        this.price = json["price"],
+        this.price = json["price"] != null ? json["price"] : null,
+        this.priceText = json["price"] != null ? "${json["price"]} PKR" : null,
         this.categoryID = json["category_id"],
-        this.categoryName = json["category_name"],
         this.brandID = json["brand_id"],
         this.stock =
             (json["stock"] as String).isNotEmpty ? json["stock"] : "Available",
         this.warranty = (json["warranty"] as String).isNotEmpty
             ? json["warranty"]
             : "No Warranty",
-        this.views = json["views"],
+        this.views = "${json["views"]} Views",
         this.brandName = json["name"].split(" ")[0],
         this.name = (json["name"] as String)
             .replaceAll(json["name"].split(" ")[0] + " ", ""),
         this.xsThumbnailImageURL = json["tss_img_url"],
         this.thumbnailImageURL = json["t_img_url"],
-        this.wished = json["wished"] ?? false;
-
+        this.wished = json["wished"] == "1";
 }
 
 class Category {
   String id;
   String name;
   String description;
+  List<Brand> brands;
 
   Category.fromJSON(Map json)
       : this.id = json["id"],
         this.name = json["name"],
-        this.description = "Gadgets for your home.";
+        this.description = "Gadgets for your home.",
+        this.brands = json["brands"]
+            .map((json) => Brand.fromJSON(json))
+            .toList()
+            .cast<Brand>();
 }
 
 class Brand {
   String id;
   String name;
-  String totalItems;
+  String imageURL;
+  String activeItems;
 
   Brand.fromJSON(Map json)
       : this.id = json["id"],
-        this.name = json["name"],
-        this.totalItems = json["total_active_items"];
+        this.name = json["brand_name"],
+        this.imageURL = json["image_url"],
+        this.activeItems = json["active_items"];
 }
 
 class Sorting {

@@ -7,13 +7,17 @@ class NativeIcons {
       ? CupertinoIcons.search
       : Icons.search;
 
-  static IconData home() => defaultTargetPlatform == TargetPlatform.iOS
-      ? CupertinoIcons.home
-      : Icons.home;
+//  static IconData home() => defaultTargetPlatform == TargetPlatform.iOS
+//      ? CupertinoIcons.home
+//      : Icons.home;
+//
+//  static IconData homeSolid() => defaultTargetPlatform == TargetPlatform.iOS
+//      ? IconData(0xF448, fontFamily: 'CupertinoIcons', fontPackage: 'cupertino_icons', matchTextDirection: true)
+//      : Icons.home;
 
-  static IconData browse() => defaultTargetPlatform == TargetPlatform.iOS
-      ? CupertinoIcons.collections
-      : Icons.shopping_basket;
+//  static IconData browse() => defaultTargetPlatform == TargetPlatform.iOS
+//      ? CupertinoIcons.collections
+//      : Icons.shopping_basket;
 
   static IconData browseSolid() => defaultTargetPlatform == TargetPlatform.iOS
       ? CupertinoIcons.collections_solid

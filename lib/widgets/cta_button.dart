@@ -15,30 +15,15 @@ class CTAButton extends StatelessWidget {
 
     Widget _content = Container(
       padding: EdgeInsets.symmetric(
-        vertical: sizeConfig.height(.0185),
+        vertical: sizeConfig.height(.02),
+        horizontal: sizeConfig.width(.05),
       ),
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.subtitle.copyWith(
-              color: Theme.of(context).canvasColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-        child: Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: sizeConfig.width(.06),
-          ),
-          padding: EdgeInsets.symmetric(
-            vertical: sizeConfig.height(.01),
-            horizontal: sizeConfig.width(.05),
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: onTap != null
-                ? Color(0xFFFFA23F)
-                : Theme.of(context).disabledColor,
-          ),
-          child: Center(child: Text(text)),
-        ),
+      margin: EdgeInsets.symmetric(
+        horizontal: sizeConfig.width(.06),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).primaryTextTheme.button,
       ),
     );
 
@@ -48,9 +33,7 @@ class CTAButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             padding: EdgeInsets.zero,
             onPressed: onTap,
-            child: Container(
-              child: _content,
-            ),
+            child: _content,
           )
         : Material(
             borderRadius: BorderRadius.circular(12),

@@ -3,18 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  static Color _primaryColor = Color(0xFFFF9000);
+  static Color _dividerColor = Colors.grey[200];
+
   static data() => ThemeData(
-        primaryColor: Color(0xFFFF9000),
+        appBarTheme: AppBarTheme(
+          color: _primaryColor,
+          elevation: 0,
+          brightness: Brightness.dark,
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+        ),
+        primaryColor: _primaryColor,
         brightness: Brightness.light,
-        accentColor: Color(0xFFFF9900),
-        appBarTheme: AppBarTheme(color: Colors.white),
-        scaffoldBackgroundColor: Colors.grey[100],
-        canvasColor: Colors.white,
+        accentColor: _primaryColor,
+        scaffoldBackgroundColor: Color(0xFFF6F6F6),
+        canvasColor: Colors.blueGrey[050],
+        cardColor: Colors.white,
         splashColor: Colors.grey[400].withOpacity(.25),
         highlightColor: Colors.grey.withOpacity(.1),
-        dividerColor: Colors.grey[300],
+        dividerColor: _dividerColor,
         cupertinoOverrideTheme: CupertinoThemeData(
-          primaryColor: Color(0xFFFF9900),
+          primaryColor: _primaryColor,
           textTheme: CupertinoTextThemeData(
             navLargeTitleTextStyle: TextStyle(
               fontSize: 32.0,
@@ -42,37 +53,44 @@ class AppTheme {
           ),
         ),
         textSelectionColor: Colors.black.withOpacity(.2),
-        textSelectionHandleColor: Color(0xFFFF9000),
-        cursorColor: Color(0xFFFF9000),
+        textSelectionHandleColor: _primaryColor,
+        cursorColor: _primaryColor,
         inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          fillColor: Colors.grey[100],
+          border: InputBorder.none,
+          fillColor: Colors.white,
           filled: true,
         ),
         tabBarTheme: TabBarTheme(
-          labelColor: Colors.orangeAccent,
+          labelColor: _primaryColor.withOpacity(.3),
           unselectedLabelColor: Colors.grey[300],
         ),
-        textTheme: TextTheme(
-          display1: GoogleFonts.poppins(fontWeight: FontWeight.w700).copyWith(
+        primaryTextTheme: TextTheme(
+          headline4: GoogleFonts.poppins(
             color: Colors.black,
+            fontWeight: FontWeight.w500,
+            fontSize: 27,
           ),
-          display2: GoogleFonts.poppins(fontWeight: FontWeight.w700)
-              .copyWith(color: Colors.black),
-          button: TextStyle(
+          headline6: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
-          title: GoogleFonts.poppins(fontWeight: FontWeight.w600)
-              .copyWith(color: Colors.black),
+          subtitle1: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+          subtitle2: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+          ),
+          button: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        buttonColor: Color(0xFFFF9000),
+        buttonColor: _primaryColor,
         cardTheme: CardTheme(elevation: 0),
         buttonTheme: ButtonThemeData(
-          buttonColor: Color(0xFFFF9000),
+          buttonColor: _primaryColor,
         ),
       );
 }

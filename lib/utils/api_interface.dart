@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as HTTP;
 import 'package:mega_dot_pk/utils/models.dart';
@@ -9,8 +10,11 @@ class APIInterface {
 
   static Future<DataFunctionResponse<List<Category>>> categories() async {
     try {
-      Map json = await _sendRequest("$baseURL/categories/read.php");
-      if (json != null) {
+      DataFunctionResponse<Map> response =
+          await _sendRequest("$baseURL/categories/read.php");
+
+      if (response.success) {
+        Map json = response.data;
         List<dynamic> categoriesJSONList = json["records"];
         List<Category> categories = [];
 
@@ -20,64 +24,66 @@ class APIInterface {
 
         return DataFunctionResponse.success(categories);
       } else
-        return DataFunctionResponse.error();
+        return DataFunctionResponse.error(errorMessage: response.errorMessage);
     } catch (e) {
       print("APIInterface: Categories: UnexpectedError: $e");
       return DataFunctionResponse.error();
     }
   }
 
-  static Future<DataFunctionResponse<List<Item>>> items(
-    String uid,
+  static Future<DataFunctionResponse<List<Product>>> products(
+    String userID,
     Category category,
-    int offset,
-    List<Item> alreadyLoadedItems, {
+    List<Product> loadedProducts, {
     Brand brand,
     Sorting sorting,
   }) async {
-    try {
-      assert(uid != null);
+    int offset = loadedProducts?.length ?? 0;
 
-      String url =
-          "$baseURL/items/read.php?uid=$uid&cid=${category.id}&offset=$offset";
+    try {
+      String url = "$baseURL/items/read.php?cid=${category.id}&offset=$offset";
+
+      if (userID != null) url += "&uid=$userID";
 
       if (brand != null) url += "&bid=${brand.id}";
 
       if (sorting != null) url += "&s_val=${sorting.value}";
 
-      Map json = await _sendRequest(url);
+      DataFunctionResponse<Map> response = await _sendRequest(url);
 
-      if (json != null) {
-
+      if (response.success) {
+        Map json = response.data;
         List<dynamic> itemsJSONList = json["records"];
-        List<Item> items = alreadyLoadedItems ?? [];
+        List<Product> items = loadedProducts ?? [];
 
         for (Map json in itemsJSONList) {
-          items.add(Item.fromJSON(json));
+          items.add(Product.fromJSON(json));
         }
 
         return DataFunctionResponse.success(items, hasMore: json["has_more"]);
       } else
-        return DataFunctionResponse.error();
+        return DataFunctionResponse.error(errorMessage: response.errorMessage);
     } catch (e) {
       print("APIInterface: Items: UnexpectedError: $e");
       return DataFunctionResponse.error();
     }
   }
 
-  static Future<DataFunctionResponse<Map>> itemDetails(Item item) async {
+  static Future<DataFunctionResponse<Map>> productDetails(
+      Product product) async {
     try {
       String url =
-          "$baseURL/items/details.php?item_id=${item.id}&cid=${item.categoryID}";
+          "$baseURL/items/details.php?item_id=${product.id}&cid=${product.categoryID}";
 
-      Map json = await _sendRequest(url);
+      DataFunctionResponse<Map> response = await _sendRequest(url);
 
-      if (json != null) {
+      if (response.success) {
+        Map json = response.data;
         Map itemDetails = json["details"];
 
         return DataFunctionResponse.success(itemDetails);
       } else
-        return DataFunctionResponse.error();
+        return DataFunctionResponse.error(errorMessage: response.errorMessage);
     } catch (e) {
       print("APIInterface: Items: UnexpectedError: $e");
       return DataFunctionResponse.error();
@@ -87,10 +93,11 @@ class APIInterface {
   static Future<DataFunctionResponse<List<Brand>>> brands(
       Category category) async {
     try {
-      Map json =
+      DataFunctionResponse<Map> response =
           await _sendRequest("$baseURL/filters/read.php?cid=${category.id}");
 
-      if (json != null) {
+      if (response.success) {
+        Map json = response.data;
         List<dynamic> itemsJSONList = json["records"];
         List<Brand> brands = [];
 
@@ -100,7 +107,7 @@ class APIInterface {
 
         return DataFunctionResponse.success(brands);
       } else
-        return DataFunctionResponse.error();
+        return DataFunctionResponse.error(errorMessage: response.errorMessage);
     } catch (e) {
       print("APIInterface: Brands: UnexpectedError: $e");
       return DataFunctionResponse.error();
@@ -111,41 +118,45 @@ class APIInterface {
       String userID, String itemID, bool wished) async {
     try {
       int wishState = wished ? 1 : 0;
-      Map json = await _sendRequest(
+      DataFunctionResponse<Map> response = await _sendRequest(
           "$baseURL/wishlist/toggle.php?uid=$userID&item_id=$itemID&state=$wishState");
 
-      if (json != null) {
+      if (response.success) {
+        Map json = response.data;
         bool success = json["success"];
 
         return DataFunctionResponse.success(success);
       } else
-        return DataFunctionResponse.error();
+        return DataFunctionResponse.error(errorMessage: response.errorMessage);
     } catch (e) {
       print("APIInterface: ToggleWished: UnexpectedError: $e");
       return DataFunctionResponse.error();
     }
   }
 
-  static Future<Map> _sendRequest(String url) async {
+  static Future<DataFunctionResponse<Map>> _sendRequest(String url) async {
     try {
       HTTP.Response response = await HTTP.get(url);
       Map json = jsonDecode(response.body);
 
-      return json;
+      return DataFunctionResponse.success(json);
     } on SocketException catch (e) {
       print("APIInterface: SendRequest: $e");
-      return null;
+      if (e.osError.errorCode == 61)
+        return DataFunctionResponse.error(
+            errorMessage: "Server Connection Refused");
+      return DataFunctionResponse.error();
     } on PlatformException catch (e) {
       if (e.code == "ERROR_NETWORK_REQUEST_FAILED") {
         print("APIInterface: SendRequest: NetworkError: $e");
-        return null;
+        return DataFunctionResponse.error(errorMessage: "Network Error");
       } else {
         print("APIInterface: SendRequest: PlatformException: $e");
-        return null;
+        return DataFunctionResponse.error();
       }
-    } catch (e) {
-      print("APIInterface: SendRequest: UnexpectedError: $url: $e");
-      return null;
+    } catch (e, s) {
+      print("APIInterface: SendRequest: UnexpectedError: $url: $e: $s");
+      return DataFunctionResponse.error();
     }
   }
 }
